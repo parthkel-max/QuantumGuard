@@ -47,7 +47,6 @@ This project demonstrates how traditional cryptographic systems can be affected 
 ## Future Improvements
 
 - User authentication
-- PDF report export
 - Cloud deployment
 - AI-assisted vulnerability explanations
 - Additional programming language support
