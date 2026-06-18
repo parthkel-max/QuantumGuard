@@ -1,5 +1,7 @@
 # 🛡️ QuantumGuard
 
+![Java](https://img.shields.io/badge/Java-Programming-orange) ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black) ![Cybersecurity](https://img.shields.io/badge/Cybersecurity-Security-red) ![Quantum Computing](https://img.shields.io/badge/Quantum-Computing-blueviolet)
+
 A web-based **Post-Quantum Code Security Scanner** that detects common software security vulnerabilities while educating developers about the impact of quantum computing on modern cryptography.
 
 QuantumGuard combines **static security analysis**, **interactive dashboards**, **security reporting**, and **quantum cryptography visualizations** into a single educational platform.
