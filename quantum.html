@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantumGuard — Quantum Education</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg qg-navbar">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand qg-brand" href="index.html">⬡ QuantumGuard</a>
+      <div class="d-flex align-items-center gap-3">
+        <a href="index.html"    class="nav-link text-white">Home</a>
+        <a href="results.html"  class="nav-link text-white">Results</a>
+        <a href="dashboard.html"class="nav-link text-white">Dashboard</a>
+        <a href="report.html"   class="nav-link text-white">Report</a>
+        <a href="help.html"     class="nav-link text-white">Help</a>
+        <button class="btn btn-sm btn-outline-light" onclick="toggleDark()">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-4">
+
+    <h2 class="fw-bold mb-1">Quantum Computing & Security</h2>
+    <p class="text-muted mb-4">Interactive visualisations showing why quantum computing threatens today's encryption — and how QuantumGuard's PQC solutions protect against it.</p>
+
+    <!-- SHOR'S ALGORITHM -->
+    <div class="card p-4 mb-4">
+      <h5 class="fw-bold">Shor's Algorithm — Why RSA Will Break</h5>
+      <p class="text-muted small mb-3">
+        <strong>This is an educational visualiser</strong> — a simplified step-by-step animation
+        showing how Shor's algorithm works conceptually. Real quantum execution requires quantum hardware.
+      </p>
+      <p class="mb-3">
+        RSA security relies on the fact that factoring large numbers is computationally hard.
+        A classical computer factoring RSA-2048 would take <strong>longer than the age of the universe</strong>.
+        Shor's algorithm uses quantum superposition and Quantum Fourier Transform (QFT) to do it in
+        <strong>polynomial time O(log³N)</strong> — estimated 8 hours on a mature quantum computer
+        <em>(Gidney & Ekerå, 2021)</em>.
+      </p>
+      <div class="row g-3 align-items-end mb-3">
+        <div class="col-md-4">
+          <label class="form-label">Choose a number to factor:</label>
+          <select id="shorN" class="form-select">
+            <option value="15">15 = 3 × 5</option>
+            <option value="21">21 = 3 × 7</option>
+            <option value="35">35 = 5 × 7</option>
+            <option value="77">77 = 7 × 11</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button class="btn qg-scan-btn w-100" onclick="runShor()">Run Visualiser</button>
+        </div>
+      </div>
+      <div id="shorSteps" class="mb-3"></div>
+      <div style="position:relative;height:220px">
+        <canvas id="shorChart"></canvas>
+      </div>
+    </div>
+
+    <!-- GROVER'S ALGORITHM -->
+    <div class="card p-4 mb-4">
+      <h5 class="fw-bold">Grover's Algorithm — Why AES-128 and MD5 Are Weakened</h5>
+      <p class="mb-3">
+        Classical brute force searches N items in <strong>O(N)</strong> time.
+        Grover's algorithm searches in <strong>O(√N)</strong> — a quadratic speedup.
+        This halves the effective key length of symmetric encryption:
+        AES-128 becomes effectively <strong>AES-64</strong> — classically breakable.
+      </p>
+      <div class="row g-3 align-items-end mb-3">
+        <div class="col-md-5">
+          <label class="form-label">Key size / search space:</label>
+          <input type="range" class="form-range" id="keySlider" min="1" max="256" value="128"
+            oninput="updateGrover()">
+          <div class="d-flex justify-content-between small text-muted">
+            <span>1 bit</span><span id="keyVal">128 bits</span><span>256 bits</span>
+          </div>
+        </div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <div class="qg-metric text-center">
+            <div class="qg-big-num text-danger" id="gClassical">2¹²⁸</div>
+            <div class="small text-muted">Classical operations</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="qg-metric text-center">
+            <div class="qg-big-num text-warning" id="gQuantum">2⁶⁴</div>
+            <div class="small text-muted">Grover's operations (√N)</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="qg-metric text-center">
+            <div class="qg-big-num text-success" id="gSpeedup">2⁶⁴×</div>
+            <div class="small text-muted">Quantum speedup</div>
+          </div>
+        </div>
+      </div>
+      <div style="position:relative;height:200px">
+        <canvas id="groverChart"></canvas>
+      </div>
+    </div>
+
+    <!-- PQC EXPLAINER -->
+    <div class="card p-4 mb-4">
+      <h5 class="fw-bold mb-3">Post-Quantum Cryptography — The Solution</h5>
+      <p class="text-muted mb-3">NIST finalised these standards in August 2024. QuantumGuard recommends these exact algorithms as replacements.</p>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="qg-pqc-card border-primary">
+            <div class="qg-pqc-icon">🔐</div>
+            <h6 class="fw-bold">CRYSTALS-Kyber</h6>
+            <div class="badge bg-primary mb-2">NIST FIPS 203</div>
+            <p class="small text-muted">Replaces RSA for key exchange. Based on Module Learning With Errors (MLWE) — a mathematical problem Shor's algorithm cannot attack.</p>
+            <div class="small"><strong>Replaces:</strong> RSA, DH, ECDH</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="qg-pqc-card border-success">
+            <div class="qg-pqc-icon">✍️</div>
+            <h6 class="fw-bold">CRYSTALS-Dilithium</h6>
+            <div class="badge bg-success mb-2">NIST FIPS 204</div>
+            <p class="small text-muted">Replaces ECDSA and RSA for digital signatures. Also based on MLWE lattice problem — secure against quantum attacks.</p>
+            <div class="small"><strong>Replaces:</strong> ECDSA, RSA-PSS, DSA</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="qg-pqc-card border-warning">
+            <div class="qg-pqc-icon">🔒</div>
+            <h6 class="fw-bold">SHA-3-256</h6>
+            <div class="badge bg-warning text-dark mb-2">NIST FIPS 202</div>
+            <p class="small text-muted">Replaces MD5 and SHA-1. Uses Keccak sponge construction — fundamentally different from MD5/SHA-1. Grover's attack requires 2¹²⁸ operations — infeasible.</p>
+            <div class="small"><strong>Replaces:</strong> MD5, SHA-1, SHA-256</div>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-info mt-3 mb-0 small">
+        <strong>QuantumGuard uses SHA-3 and CRYSTALS-Kyber on its own server via Bouncy Castle.</strong>
+        This is not just theory — real post-quantum cryptography is running on every scan you perform.
+      </div>
+    </div>
+
+    <!-- LIVE ATTACK MONITOR -->
+    <div class="card p-4 mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h5 class="fw-bold mb-0">Live Attack Monitor</h5>
+          <p class="text-muted small mb-0">QuantumGuard actively defends itself — blocked attacks logged in real time.</p>
+        </div>
+        <div class="text-center">
+          <div class="qg-big-num text-danger" id="attackCount">0</div>
+          <div class="small text-muted">Attacks blocked today</div>
+        </div>
+      </div>
+      <div style="position:relative;height:200px" class="mb-3">
+        <canvas id="attackChart"></canvas>
+      </div>
+      <div id="attackLog" class="qg-attack-log"></div>
+      <div class="mt-3 small text-muted">
+        <strong>Defence mechanisms active:</strong>
+        Rate limiting (15 req/min) · Input sanitisation (50KB max) ·
+        Security headers (X-Frame-Options, CSP, XSS-Protection) ·
+        SHA-3 file integrity verification
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script src="scanner.js"></script>
+  <script>
+
+    // ── SHOR'S VISUALISER ──────────────────────────────────────────
+    let shorChartInst = null;
+
+    const shorData = {
+      15: { p:3, q:5, a:2, r:4, steps:[
+        "Step 1 (Classical): N = 15. Choose random a = 2. GCD(2,15) = 1 — proceed.",
+        "Step 2 (QUANTUM): Find period r of f(x) = 2^x mod 15 using superposition.",
+        "Step 3 (QUANTUM): Quantum Fourier Transform applied to superposition — period r = 4.",
+        "Step 4 (Classical): r=4 is even. a^(r/2) = 2^2 = 4. GCD(4+1,15)=5, GCD(4-1,15)=3.",
+        "Result: 15 = 3 × 5 ✓ — RSA would be factored this way at scale."
+      ]},
+      21: { p:3, q:7, a:2, r:6, steps:[
+        "Step 1 (Classical): N = 21. Choose random a = 2. GCD(2,21) = 1 — proceed.",
+        "Step 2 (QUANTUM): Find period r of f(x) = 2^x mod 21 using superposition.",
+        "Step 3 (QUANTUM): Quantum Fourier Transform extracts period r = 6.",
+        "Step 4 (Classical): r=6 is even. a^(r/2) = 2^3 = 8. GCD(9,21)=3, GCD(7,21)=7.",
+        "Result: 21 = 3 × 7 ✓"
+      ]},
+      35: { p:5, q:7, a:2, r:12, steps:[
+        "Step 1 (Classical): N = 35. Choose random a = 2. GCD(2,35) = 1 — proceed.",
+        "Step 2 (QUANTUM): Find period r of f(x) = 2^x mod 35 using superposition.",
+        "Step 3 (QUANTUM): Quantum Fourier Transform extracts period r = 12.",
+        "Step 4 (Classical): r=12 is even. Compute GCD steps to find factors.",
+        "Result: 35 = 5 × 7 ✓"
+      ]},
+      77: { p:7, q:11, a:2, r:30, steps:[
+        "Step 1 (Classical): N = 77. Choose random a = 2. GCD(2,77) = 1 — proceed.",
+        "Step 2 (QUANTUM): Find period r of f(x) = 2^x mod 77 using superposition.",
+        "Step 3 (QUANTUM): Quantum Fourier Transform extracts period r = 30.",
+        "Step 4 (Classical): r=30 is even. Compute GCD steps to find factors.",
+        "Result: 77 = 7 × 11 ✓"
+      ]}
+    };
+
+    function runShor() {
+      const N = document.getElementById('shorN').value;
+      const d = shorData[N];
+      const stepsHtml = d.steps.map((s,i) =>
+        `<div class="alert ${i===1||i===2 ? 'alert-warning' : 'alert-light'} py-2 mb-1 small">
+          <strong>Step ${i+1}:</strong> ${s}</div>`
+      ).join('');
+      document.getElementById('shorSteps').innerHTML = stepsHtml;
+
+      // Probability distribution chart
+      const labels = [], classicalData = [], quantumData = [];
+      for (let x = 0; x < d.r * 4; x++) {
+        labels.push(x);
+        classicalData.push(1 / (d.r * 4));
+        // Quantum peaks at multiples of N/r
+        quantumData.push(x % d.r === 0 ? 0.8 : 0.02);
+      }
+
+      if (shorChartInst) shorChartInst.destroy();
+      shorChartInst = new Chart(document.getElementById('shorChart'), {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Classical (uniform)', data: classicalData, borderColor:'#6c757d', borderWidth:1, pointRadius:0, fill:false },
+            { label: 'Quantum (peaks at period r)', data: quantumData, borderColor:'#dc3545', backgroundColor:'rgba(220,53,69,0.1)', borderWidth:2, pointRadius:0, fill:true }
+          ]
+        },
+        options: { responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{ position:'top' },
+            title:{ display:true, text:`Probability amplitudes for N=${N}. Quantum peaks reveal period r=${d.r}` }
+          }
+        }
+      });
+    }
+
+    // ── GROVER'S VISUALISER ──────────────────────────────────────────
+    let groverChartInst = null;
+
+    function updateGrover() {
+      const bits = parseInt(document.getElementById('keySlider').value);
+      document.getElementById('keyVal').textContent   = bits + ' bits';
+      document.getElementById('gClassical').textContent = `2^${bits}`;
+      document.getElementById('gQuantum').textContent   = `2^${Math.round(bits/2)}`;
+      document.getElementById('gSpeedup').textContent   = `2^${Math.round(bits/2)}×`;
+
+      const labels = [], classical = [], quantum = [];
+      for (let b = 64; b <= 256; b += 16) {
+        labels.push(b + ' bits');
+        classical.push(b);
+        quantum.push(Math.round(b / 2));
+      }
+
+      if (groverChartInst) groverChartInst.destroy();
+      groverChartInst = new Chart(document.getElementById('groverChart'), {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Classical security (bits)', data: classical, backgroundColor: '#198754' },
+            { label: 'After Grover — effective bits', data: quantum, backgroundColor: '#dc3545' }
+          ]
+        },
+        options: { responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{ position:'top' },
+            title:{ display:true, text:"Grover's algorithm halves effective key security" }
+          },
+          scales:{ y:{ beginAtZero:true, title:{ display:true, text:'Effective security (bits)' } } }
+        }
+      });
+    }
+    updateGrover();
+
+    // ── LIVE ATTACK MONITOR ──────────────────────────────────────────
+    let attackChartInst = null;
+    const attackLabels  = [];
+    const attackCounts  = [];
+
+    function fetchAttacks() {
+      fetch('http://localhost:8080/api/attacks')
+        .then(r => r.json())
+        .then(attacks => {
+          document.getElementById('attackCount').textContent = attacks.length;
+          const logEl = document.getElementById('attackLog');
+          if (attacks.length === 0) {
+            logEl.innerHTML = '<div class="text-muted small p-2">No attacks blocked yet. Server is running securely.</div>';
+            return;
+          }
+          logEl.innerHTML = attacks.slice(0,10).map(a =>
+            `<div class="d-flex justify-content-between align-items-center border-bottom py-1 small">
+              <span class="badge bg-danger me-2">${a.type}</span>
+              <span class="text-muted">${a.ip}</span>
+              <span class="text-muted">${a.path}</span>
+              <span class="text-muted">${new Date(a.time).toLocaleTimeString()}</span>
+            </div>`
+          ).join('');
+
+          // Update chart
+          const now = new Date().toLocaleTimeString();
+          if (attackLabels.length > 10) { attackLabels.shift(); attackCounts.shift(); }
+          attackLabels.push(now);
+          attackCounts.push(attacks.length);
+
+          if (attackChartInst) {
+            attackChartInst.data.labels    = [...attackLabels];
+            attackChartInst.data.datasets[0].data = [...attackCounts];
+            attackChartInst.update();
+          } else {
+            attackChartInst = new Chart(document.getElementById('attackChart'), {
+              type: 'line',
+              data: {
+                labels: attackLabels,
+                datasets: [{ label: 'Total blocked attacks', data: attackCounts,
+                  borderColor: '#dc3545', backgroundColor: 'rgba(220,53,69,0.1)',
+                  fill: true, tension: 0.4 }]
+              },
+              options: { responsive:true, maintainAspectRatio:false,
+                plugins:{ legend:{ display:false } },
+                scales:{ y:{ beginAtZero:true } }
+              }
+            });
+          }
+        })
+        .catch(() => {
+          document.getElementById('attackLog').innerHTML =
+            '<div class="text-muted small p-2">Server not running — start QuantumGuardServer.java first.</div>';
+        });
+    }
+
+    fetchAttacks();
+    setInterval(fetchAttacks, 5000);
+    runShor();
+  </script>
+
+</body>
+</html>

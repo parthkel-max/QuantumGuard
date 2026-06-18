@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantumGuard — Code Security Scanner</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg qg-navbar sticky-top">
+  <div class="container-fluid px-3">
+    <a class="navbar-brand qg-brand" href="#" onclick="showSection('scan')">
+      <span>⬡</span> QuantumGuard
+    </a>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <button class="btn btn-sm nav-tab-btn active" id="tab-scan"      onclick="showSection('scan')">🏠 Scan</button>
+      <button class="btn btn-sm nav-tab-btn"         id="tab-results"  onclick="showSection('results')">📋 Results</button>
+      <button class="btn btn-sm nav-tab-btn"         id="tab-dashboard"onclick="showSection('dashboard')">📊 Dashboard</button>
+      <button class="btn btn-sm nav-tab-btn"         id="tab-quantum"  onclick="showSection('quantum')">⚛️ Quantum</button>
+      <button class="btn btn-sm nav-tab-btn"         id="tab-report"   onclick="showSection('report')">📄 Report</button>
+      <button class="btn btn-sm nav-tab-btn"         id="tab-help"     onclick="showSection('help')">❓ Help</button>
+      <button class="btn btn-sm btn-outline-light"   id="darkToggle"   onclick="toggleDark()">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Warning Banner (static, no animation) -->
+<div style="background:#dc2626;padding:6px 0;text-align:center">
+  <span style="color:#fff;font-size:0.8rem;font-family:monospace">
+    ⚠ India NQM 2027: RSA/ECC encryption used by banks and Aadhaar will be broken by quantum computers ~2031. 
+    &nbsp;|&nbsp; 🛡 QuantumGuard uses SHA-3-256 + CRYSTALS-Kyber (NIST FIPS 202/203) on every scan.
+  </span>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 1 — HOME / SCANNER
+══════════════════════════════════════════════ -->
+<div id="section-scan" class="section-page">
+
+  <!-- Hero -->
+  <div class="qg-hero text-center">
+    <div class="container">
+      <div style="font-size:3.5rem">🛡️</div>
+      <h1 class="qg-title mt-2">QuantumGuard</h1>
+      <p class="qg-subtitle mt-2 mb-3">
+        Find security bugs in your code — <strong style="color:#f87171">ones dangerous right now</strong>
+        and <strong style="color:#fbbf24">ones quantum computers will cause by 2030</strong>
+      </p>
+      <div class="d-flex justify-content-center gap-2 flex-wrap">
+        <span class="badge bg-danger fs-6 px-3 py-2">🔴 20 CVE Security Rules</span>
+        <span class="badge bg-warning text-dark fs-6 px-3 py-2">⚡ Quantum-Future Threats</span>
+        <span class="badge bg-success fs-6 px-3 py-2">✅ Free · No AI · No Signup</span>
+        <span class="badge bg-primary fs-6 px-3 py-2">🔒 SHA-3 + CRYSTALS-Kyber</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container py-4">
+
+    <!-- Plain English explainer -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="what-is-box h-100">
+          <div class="wi-title">💡 What does this tool do?</div>
+          <p>Paste any source code and QuantumGuard reads every line, checking for security mistakes — like MD5 hashing, hardcoded passwords, SQL injection, insecure deserialization, weak JWTs, and weak random numbers.[web:32][web:49][web:51][web:52]</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="what-is-box h-100">
+          <div class="wi-title">⚛️ What is a "quantum threat"?</div>
+          <p>Quantum computers (IBM, Google building them now) can break RSA and ECC encryption in hours using <strong>Shor's Algorithm</strong>. Code that's safe today will be breakable by ~2030. This tool warns you in advance.[web:51]</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="what-is-box h-100">
+          <div class="wi-title">🔒 What crypto does this tool use itself?</div>
+          <p>QuantumGuard practices what it preaches. The Java server hashes your code using <strong>SHA-3-256</strong> and generates a <strong>CRYSTALS-Kyber</strong> key pair — both are NIST-approved post-quantum standards.[web:51]</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 1 — Sector -->
+    <div class="card p-4 mb-3">
+      <h5 class="fw-bold mb-1">Step 1 — What kind of app is this code for?</h5>
+      <p class="text-muted small mb-3">This changes severity weighting. Healthcare/Govt vulnerabilities score 1.3× higher because the data is more sensitive.</p>
+      <div class="row">
+        <div class="col-md-7">
+          <select id="sectorSelect" class="form-select form-select-lg">
+            <option value="other">🔵 General / Other</option>
+            <option value="healthcare">🏥 Healthcare — patient records, hospital apps</option>
+            <option value="banking">🏦 Banking / Finance — payments, UPI</option>
+            <option value="government">🏛️ Government — public services, databases</option>
+            <option value="education">🎓 Education — student portals, college apps</option>
+          </select>
+          <div class="form-text">Healthcare &amp; Govt = 1.3× weight | Banking = 1.2× | General = 0.9×</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2 — Code Input -->
+    <div class="card p-4 mb-3">
+      <h5 class="fw-bold mb-1">Step 2 — Paste your code or upload a file</h5>
+      <p class="text-muted small mb-3">Works with Java, Python, JS, PHP, Go, C, C++, C#, Ruby, Kotlin, Swift, Rust. Max 50KB.</p>
+
+      <div class="mb-3">
+        <p class="fw-semibold small mb-2">👇 Try a sample to see how it works:</p>
+        <div class="d-flex flex-wrap gap-2">
+          <button class="btn btn-sm btn-outline-danger"  onclick="loadSample('java-bad')">⚠️ Vulnerable Java</button>
+          <button class="btn btn-sm btn-outline-danger"  onclick="loadSample('python-bad')">⚠️ Vulnerable Python</button>
+          <button class="btn btn-sm btn-outline-danger"  onclick="loadSample('php-bad')">⚠️ Vulnerable PHP</button>
+          <button class="btn btn-sm btn-outline-success" onclick="loadSample('java-good')">✅ Secure Java</button>
+        </div>
+      </div>
+
+      <textarea id="codeInput" class="form-control qg-code-area"
+        placeholder="// Paste any source code here
+// QuantumGuard will check every line for security issues
+// Or click a sample button above to load example code"></textarea>
+
+      <div class="mt-3">
+        <label class="form-label fw-semibold small">Or upload a file:</label>
+        <input type="file" id="fileInput" class="form-control form-control-sm"
+          accept=".java,.js,.ts,.py,.php,.c,.cpp,.cs,.go,.rb,.kt,.swift,.rs"
+          onchange="loadFile(this)">
+        <div class="form-text">Max 50KB. Your code is never saved anywhere.</div>
+      </div>
+    </div>
+
+    <!-- Scan Button -->
+    <div class="text-center mb-4">
+      <button id="scanBtn" class="btn qg-scan-btn btn-lg px-5 py-3" onclick="startScan()">
+        🔍 Scan My Code Now
+      </button>
+      <div class="text-muted small mt-2">Results in under 1 second</div>
+    </div>
+
+    <!-- Progress -->
+    <div id="progressSection" style="display:none" class="mb-4">
+      <div class="card p-4">
+        <div id="progressMsg" class="text-center fw-semibold mb-2 text-primary">Starting...</div>
+        <div class="progress" style="height:14px">
+          <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHA3 Hash Result -->
+    <div id="hashSection" style="display:none" class="mb-4">
+      <div class="qg-hash-alert">
+        <strong>🔒 SHA-3-256 Hash of your code</strong>
+        <span class="badge bg-success ms-2">Quantum-safe ✓</span><br>
+        <code id="sha3Display" class="small"></code><br>
+        <span class="text-muted small">Unique fingerprint. Faking it requires 2¹²⁸ quantum operations — infeasible.[web:51]</span>
+      </div>
+    </div>
+
+    <!-- What we detect -->
+    <div class="card p-4 mt-3">
+      <h6 class="fw-bold mb-3">🔎 What QuantumGuard detects — all 20 CVE-style rules</h6>
+      <div class="row g-2">
+        <div class="col-md-6">
+          <div class="simple-note">
+            <strong>🔴 Dangerous RIGHT NOW:</strong><br>
+            MD5 hashing · SHA-1 hashing · DES encryption ·
+            Hardcoded passwords · Hardcoded API keys ·
+            SQL injection · Sensitive data in logs ·
+            HTTP (not HTTPS) · TLS 1.0 / TLS 1.1 ·
+            Insecure random numbers · Insecure deserialization ·
+            High-entropy secrets committed to code · Weak JWT configuration (alg="none", HS256 with weak secret).[web:32][web:49][web:51][web:52][web:53]
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="simple-note">
+            <strong>⚡ Dangerous by 2030 (quantum):</strong><br>
+            RSA keys → broken by <em>Shor's Algorithm</em> in ~8 hours ·
+            ECC/ECDSA → broken by <em>Shor's</em> in ~4 hours ·
+            AES-128 → weakened by <em>Grover's Algorithm</em> ·
+            Insecure random number generators used for crypto keys and tokens.[web:51]
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 2 — RESULTS
+══════════════════════════════════════════════ -->
+<div id="section-results" class="section-page" style="display:none">
+  <div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <h2 class="fw-bold mb-0">📋 Scan Results</h2>
+      <button class="btn btn-outline-primary btn-sm" onclick="showSection('scan')">🔄 Scan Again</button>
+    </div>
+
+    <div id="noResults" class="text-center py-5">
+      <div style="font-size:3rem">🔍</div>
+      <h5 class="mt-3">No results yet</h5>
+      <p class="text-muted">Run a scan first on the Home tab.</p>
+      <button class="btn qg-scan-btn" onclick="showSection('scan')">Go to Scanner →</button>
+    </div>
+
+    <div id="resultsContent" style="display:none">
+      <div id="scoreHeader" class="row g-3 mb-4"></div>
+
+      <div id="resultsHashSection" style="display:none" class="mb-4">
+        <div class="qg-hash-alert">
+          <strong>🔒 SHA-3-256 Hash</strong> <span class="badge bg-success ms-1">Quantum-safe ✓</span><br>
+          <code id="resultsHashDisplay" class="small"></code>
+        </div>
+      </div>
+
+      <div class="what-is-box mb-3">
+        <div class="wi-title">💡 How to read these results</div>
+        <p>
+          <strong>🔴 Critical</strong> = Fix immediately, exploitable right now. &nbsp;
+          <strong>🟠 High</strong> = Fix soon. &nbsp;
+          <strong>⚡ Quantum Impact</strong> = Will get much worse by 2030. &nbsp;
+          Use the <strong>Fix Checklist</strong> tab for copy-paste ready code fixes.
+        </p>
+      </div>
+
+      <ul class="nav nav-tabs mb-3" id="resultTabs">
+        <li class="nav-item"><button class="nav-link active" onclick="showRTab('present',this)">🔴 Present-Day Bugs <span class="badge bg-danger ms-1" id="presentCount">0</span></button></li>
+        <li class="nav-item"><button class="nav-link" onclick="showRTab('quantum',this)">⚡ Quantum Threats <span class="badge bg-warning text-dark ms-1" id="quantumCount">0</span></button></li>
+        <li class="nav-item"><button class="nav-link" onclick="showRTab('checklist',this)">✅ Fix Checklist <span class="badge bg-primary ms-1" id="checklistCount">0</span></button></li>
+      </ul>
+
+      <div class="mb-3 d-flex gap-2 flex-wrap" id="filterBtns">
+        <button class="btn btn-sm btn-outline-secondary active" onclick="filterSev('all',this)">All</button>
+        <button class="btn btn-sm btn-outline-danger"            onclick="filterSev('CRITICAL',this)">Critical</button>
+        <button class="btn btn-sm btn-outline-warning"           onclick="filterSev('HIGH',this)">High</button>
+      </div>
+
+      <div id="presentTab">
+        <div id="presentFindings"></div>
+        <div id="noPresentMsg" class="alert alert-success" style="display:none">✅ No present-day bugs found!</div>
+      </div>
+      <div id="quantumTab" style="display:none">
+        <div class="what-is-box mb-3">
+          <div class="wi-title">⚡ Quantum-Future Threats explained</div>
+          <p>These algorithms are safe today but will be cracked by quantum computers around 2030. Hackers are already recording your encrypted data today to decrypt it later — "Harvest Now, Decrypt Later" (HNDL).[web:51]</p>
+        </div>
+        <div id="quantumFindings"></div>
+        <div id="noQuantumMsg" class="alert alert-success" style="display:none">✅ No quantum-future vulnerabilities found!</div>
+      </div>
+      <div id="checklistTab" style="display:none">
+        <div class="what-is-box mb-3">
+          <div class="wi-title">✅ Fix Checklist — copy-paste ready</div>
+          <p>Each item shows the <strong>exact insecure line</strong> and its <strong>secure replacement</strong>. Tick off as you fix.</p>
+        </div>
+        <div id="checklistItems"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 3 — DASHBOARD
+══════════════════════════════════════════════ -->
+<div id="section-dashboard" class="section-page" style="display:none">
+  <div class="container py-4">
+    <h2 class="fw-bold mb-1">📊 Security Dashboard</h2>
+    <p class="text-muted mb-4">Charts + Harvest Now Decrypt Later risk calculator</p>
+
+    <div id="noDashData" class="text-center py-5" style="display:none">
+      <div style="font-size:3rem">📊</div>
+      <h5 class="mt-3">Run a scan first</h5>
+      <button class="btn qg-scan-btn mt-2" onclick="showSection('scan')">Go to Scanner →</button>
+    </div>
+
+    <div id="dashContent">
+      <div class="row g-3 mb-4">
+        <div class="col-sm-3"><div class="qg-metric"><div class="qg-big-num text-primary" id="dScore">--</div><div class="small text-muted">Security Score /100</div></div></div>
+        <div class="col-sm-3"><div class="qg-metric"><div id="dGrade" class="qg-grade-circle grade-F" style="width:56px;height:56px;font-size:1.4rem;margin:0 auto">-</div><div class="small text-muted mt-2">Grade (A–F)</div></div></div>
+        <div class="col-sm-3"><div class="qg-metric"><div class="qg-big-num text-danger" id="dFindings">--</div><div class="small text-muted">Total Findings</div></div></div>
+        <div class="col-sm-3"><div class="qg-metric"><div class="qg-big-num text-success" id="dAgility">--</div><div class="small text-muted">Crypto Agility /10</div></div></div>
+      </div>
+
+      <div class="row g-4 mb-4">
+        <div class="col-md-6">
+          <div class="card p-3 h-100">
+            <h6 class="fw-bold mb-1">Findings by Category</h6>
+            <p class="text-muted small mb-2">What types of issues were found</p>
+            <div style="position:relative;height:230px"><canvas id="categoryChart"></canvas></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card p-3 h-100">
+            <h6 class="fw-bold mb-1">Algorithm Security Timeline</h6>
+            <p class="text-muted small mb-2">When each algorithm was or will be broken</p>
+            <div style="position:relative;height:230px"><canvas id="timelineChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HNDL Calculator -->
+      <div class="card p-4 mb-4">
+        <h5 class="fw-bold mb-1">⚡ Harvest Now, Decrypt Later (HNDL) Risk Calculator</h5>
+        <p class="text-muted small mb-3">Estimate how much risk your data faces from nation-states recording traffic today and decrypting it when quantum computers arrive.[web:51]</p>
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <label class="form-label fw-semibold small">What data does your app handle?</label>
+            <select id="hndlData" class="form-select form-select-sm">
+              <option value="health">🏥 Health / Medical records</option>
+              <option value="financial">🏦 Financial / Payment data</option>
+              <option value="government">🏛️ Government / National security</option>
+              <option value="personal">👤 Personal data (name, address)</option>
+              <option value="other">📦 Non-sensitive / Public</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold small">What sector?</label>
+            <select id="hndlSector" class="form-select form-select-sm">
+              <option value="government">🏛️ Government</option>
+              <option value="banking">🏦 Banking / Finance</option>
+              <option value="healthcare">🏥 Healthcare</option>
+              <option value="education">🎓 Education</option>
+              <option value="other">🔵 Other</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold small">Worst algorithm in your code?</label>
+            <select id="hndlAlgo" class="form-select form-select-sm">
+              <option value="rsa">RSA — broken by Shor's in ~8 hours</option>
+              <option value="ecc">ECC/ECDSA — broken by Shor's in ~4 hours</option>
+              <option value="des">DES — already broken classically</option>
+              <option value="aes128">AES-128 — Grover halves its security</option>
+              <option value="sha1">SHA-1 — broken since 2017</option>
+              <option value="md5">MD5 — broken since 2004</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn qg-scan-btn mb-3" onclick="calculateHNDL()">⚡ Calculate My Risk</button>
+        <div id="hndlResult" style="display:none">
+          <div class="row g-3 align-items-center mb-3">
+            <div class="col-md-3 text-center">
+              <div id="hndlScore" class="qg-big-num">--</div>
+              <div id="hndlLevel" class="badge fs-6 mt-1">--</div>
+              <div class="small text-muted mt-1">Risk Score / 100</div>
+            </div>
+            <div class="col-md-9">
+              <div id="hndlAction" class="alert mb-2"></div>
+              <div class="small text-muted">Formula: <code id="hndlFormula"></code></div>
+              <div class="small text-muted">Weights: (DataSensitivity × 0.4) + (QuantumVulnerability × 0.4) + (SectorUrgency × 0.2) × 10</div>
+            </div>
+          </div>
+          <div style="position:relative;height:180px"><canvas id="hndlChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 4 — QUANTUM EDUCATION
+══════════════════════════════════════════════ -->
+<div id="section-quantum" class="section-page" style="display:none">
+  <div class="container py-4">
+
+    <h2 class="fw-bold mb-1">⚛️ Quantum Computing &amp; Security</h2>
+    <p class="text-muted mb-4">How quantum computers break encryption — live quantum circuit simulation + educational visualisers</p>
+
+    <!-- ══ QUANTUM COMPUTING LIVE ENGINE ══ -->
+
+    <!-- QRNG -->
+    <div class="card p-4 mb-4" style="border:2px solid #2563eb">
+      <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+        <h5 class="fw-bold mb-0">⚛️ Quantum Random Number Generator (QRNG)</h5>
+        <span class="badge bg-primary">Live Backend</span>
+        <span class="badge bg-success">Real Quantum Circuit</span>
+      </div>
+      <p class="text-muted small mb-3">
+        Runs a real quantum circuit on the Java server: each qubit starts at |0⟩, a
+        <strong>Hadamard gate</strong> creates superposition (|0⟩+|1⟩)/√2, then
+        <strong>Born-rule measurement</strong> collapses it to |0⟩ or |1⟩ with P=0.5.
+        This is the same algorithm used by IBM Qiskit's statevector simulator.
+        The output is SHA-3-256 hashed to produce quantum-safe key material.
+      </p>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold small">Number of qubits to generate:</label>
+          <select id="qrngBits" class="form-select form-select-sm">
+            <option value="8">8 qubits</option>
+            <option value="16" selected>16 qubits</option>
+            <option value="32">32 qubits</option>
+            <option value="64">64 qubits</option>
+          </select>
+          <div class="form-text">Each qubit: |0⟩ → H → |+⟩ → Measure → |0⟩ or |1⟩</div>
+        </div>
+        <div class="col-md-8 d-flex align-items-end">
+          <div>
+            <button id="qrngBtn" class="btn qg-scan-btn" onclick="runQRNG()">⚛️ Generate Quantum Random Number</button>
+            <span id="qrngSpinner" class="spinner-border spinner-border-sm text-primary ms-2" style="display:none"></span>
+            <div class="form-text mt-1">Calls <code>/api/qrng</code> → Java <code>QuantumSimulator.quantumRandomBits()</code></div>
+          </div>
+        </div>
+      </div>
+      <div class="card p-3 mb-3" style="background:#f8fafc">
+        <div class="small fw-bold mb-2 text-primary">⚛️ Circuit: H⊗n → Measure (Born rule collapse)</div>
+        <div class="quantum-circuit">
+          <div class="qc-row"><span class="qc-label">q₀ |0⟩</span><div class="qc-wire"></div><div class="qc-gate gate-h" title="Hadamard">H</div><div class="qc-wire"></div><div class="qc-gate gate-m" title="Measure">M</div></div>
+          <div class="qc-row"><span class="qc-label">q₁ |0⟩</span><div class="qc-wire"></div><div class="qc-gate gate-h">H</div><div class="qc-wire"></div><div class="qc-gate gate-m">M</div></div>
+          <div class="qc-row"><span class="qc-label">... |0⟩</span><div class="qc-wire"></div><div class="qc-gate gate-h">H</div><div class="qc-wire"></div><div class="qc-gate gate-m">M</div></div>
+          <div class="qc-legend mt-2 d-flex flex-wrap gap-2">
+            <span class="badge" style="background:#1d4ed8">H = Hadamard (superposition)</span>
+            <span class="badge bg-danger">M = Measure (Born rule)</span>
+            <span class="badge bg-success">P(0) = P(1) = 0.5</span>
+          </div>
+        </div>
+      </div>
+      <div id="qrngOutput"><div class="text-muted small text-center py-3">Click the button to run the quantum circuit on the Java server.</div></div>
+      <div style="position:relative;height:180px" class="mt-3"><canvas id="qrngChart"></canvas></div>
+      <div class="what-is-box mt-3">
+        <div class="wi-title">🔒 Why this matters for security</div>
+        <p>QuantumGuard flags <code>new Random()</code> and <code>Math.random()</code> as insecure.
+        This QRNG demonstrates the correct quantum alternative — randomness from superposition collapse,
+        physically unpredictable, then SHA-3-256 hashed into secure key material (NIST FIPS 202).</p>
+      </div>
+    </div>
+
+    <!-- GROVER LIVE SIM -->
+    <div class="card p-4 mb-4" style="border:2px solid #d97706">
+      <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+        <h5 class="fw-bold mb-0">🔑 Grover's Algorithm — Live State-Vector Simulation</h5>
+        <span class="badge" style="background:#d97706">Live Backend</span>
+      </div>
+      <p class="text-muted small mb-3">
+        The Java backend tracks the full amplitude array for all 2ⁿ states, applies Oracle (phase flip)
+        and Diffusion (inversion about mean) for √N optimal iterations.
+        Demonstrates why <strong>AES-128 is weakened</strong>: Grover reduces 2¹²⁸ search to 2⁶⁴.
+      </p>
+      <div class="row g-3 mb-3">
+        <div class="col-md-3">
+          <label class="form-label fw-semibold small">Qubits:</label>
+          <select id="groverSimQubits" class="form-select form-select-sm">
+            <option value="2">2 qubits (4 states)</option>
+            <option value="3" selected>3 qubits (8 states)</option>
+            <option value="4">4 qubits (16 states)</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold small">Target state:</label>
+          <select id="groverSimTarget" class="form-select form-select-sm">
+            <option value="0">Index 0</option><option value="1">Index 1</option>
+            <option value="3">Index 3</option><option value="5" selected>Index 5</option>
+            <option value="7">Index 7</option>
+          </select>
+        </div>
+        <div class="col-md-6 d-flex align-items-end">
+          <div>
+            <button id="groverSimBtn" class="btn qg-scan-btn" onclick="runGroverSim()">▶ Run Live Grover Simulation</button>
+            <div class="form-text mt-1">Calls <code>/api/grover</code> → Java <code>QuantumSimulator.groverSearch()</code></div>
+          </div>
+        </div>
+      </div>
+      <div id="groverSimOutput"><div class="text-muted small text-center py-3">Click the button to run Grover state-vector simulation.</div></div>
+    </div>
+
+    <!-- Qubit -->
+    <div class="card p-4 mb-4">
+      <h5 class="fw-bold mb-3">🔵 What is a Qubit?</h5>
+      <div class="row g-4 align-items-center">
+        <div class="col-md-5 text-center">
+          <div class="qubit-display" id="qubitDisplay">
+            <div class="qubit-circle" id="qubitCircle">|+⟩</div>
+            <div class="small text-muted mt-2" id="qubitStateLabel">Superposition state</div>
+          </div>
+          <div class="d-flex gap-2 justify-content-center flex-wrap mt-3">
+            <button class="btn btn-sm btn-outline-success" onclick="setQubit('0')">|0⟩ Zero</button>
+            <button class="btn btn-sm btn-outline-danger"  onclick="setQubit('1')">|1⟩ One</button>
+            <button class="btn btn-sm btn-outline-warning" onclick="setQubit('sup')">|+⟩ Superposition</button>
+            <button class="btn btn-sm" onclick="setQubit('ent')" style="border-color:#7c3aed;color:#7c3aed;border:1px solid">Entangled</button>
+          </div>
+        </div>
+        <div class="col-md-7">
+          <div class="what-is-box mb-2">
+            <div class="wi-title">💻 Classical Bit</div>
+            <p>Always exactly <strong>0</strong> or <strong>1</strong>. Like a light switch. To try all keys, you must try them one by one.</p>
+          </div>
+          <div class="what-is-box mb-2">
+            <div class="wi-title">⚛️ Qubit</div>
+            <p>Can be <strong>0 AND 1 at the same time</strong> — called <em>superposition</em>. 50 qubits represent 2⁵⁰ values simultaneously. This is why quantum search is so fast.</p>
+          </div>
+          <div class="what-is-box">
+            <div class="wi-title">🔗 Entanglement</div>
+            <p>Two qubits can be "linked" so measuring one instantly tells you the state of the other. Shor's Algorithm uses this to find RSA prime factors in polynomial time.[web:51]</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shor's -->
+    <div class="card p-4 mb-4">
+      <h5 class="fw-bold mb-1">🔓 Shor's Algorithm — Why RSA Will Break</h5>
+      <p class="text-muted small mb-3">RSA security relies on factoring large numbers being hard. A classical computer factoring RSA-2048 would take longer than the age of the universe. Shor's does it in <strong>polynomial time O(log³N)</strong> — estimated <strong>8 hours on a mature quantum computer</strong>.[web:51]</p>
+
+      <!-- Circuit -->
+      <div class="card p-3 mb-3" style="background:#f8fafc">
+        <div class="small fw-bold mb-2 text-primary">⚛️ Shor's Algorithm — Quantum Circuit</div>
+        <div class="quantum-circuit" id="quantumCircuit">
+          <div class="qc-row">
+            <span class="qc-label">q₀ |0⟩</span>
+            <div class="qc-wire"></div>
+            <div class="qc-gate gate-h" title="Hadamard — creates superposition">H</div>
+            <div class="qc-wire"></div>
+            <div class="qc-gate gate-u" title="Modular exponentiation">Uₓ</div>
+            <div class="qc-wire"></div>
+            <div class="qc-gate gate-q" title="Quantum Fourier Transform">QFT</div>
+            <div class="qc-wire"></div>
+            <div class="qc-gate gate-m" title="Measurement">M</div>
+          </div>
+          <div class="qc-row">
+            <span class="qc-label">q₁ |0⟩</span>
+            <div class="qc-wire"></div>
+            <div class="qc-gate gate-h">H</div>
+            <div class="qc-wire"></div>
+            <div class="qc-gate gate-cx" title="CNOT — entangles qubits">CX</div>
+            <div class="qc-wire"></div>
+            <div class="qc-gate gate-q">QFT</div>
+            <div class="qc-wire"></div>
+            <div class="qc-gate gate-m">M</div>
+          </div>
+          <div class="qc-row">
+            <span class="qc-label">q₂ |0⟩</span>
+            <div class="qc-wire"></div>
+            <div class="qc-gate gate-h">H</div>
+            <div class="qc-wire"></div>
+            <div class="qc-gate gate-u">Uₓ</div>
+            <div class="qc-wire"></div>
+            <div class="qc-gate gate-q">QFT</div>
+            <div class="qc-wire"></div>
+            <div class="qc-gate gate-m">M</div>
+          </div>
+          <div class="qc-legend mt-2 d-flex flex-wrap gap-2">
+            <span class="badge" style="background:#1d4ed8">H = Hadamard (superposition)</span>
+            <span class="badge" style="background:#7c3aed">Uₓ = Mod. Exp (quantum parallel)</span>
+            <span class="badge" style="background:#065f46">CX = CNOT (entanglement)</span>
+            <span class="badge" style="background:#b45309">QFT = Quantum Fourier Transform</span>
+            <span class="badge bg-danger">M = Measure</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 align-items-start">
+        <div class="col-md-5">
+          <label class="form-label fw-semibold small">Choose a number to factor:</label>
+          <select id="shorN" class="form-select form-select-sm mb-2">
+            <option value="15">N = 15 = 3 × 5</option>
+            <option value="21">N = 21 = 3 × 7</option>
+            <option value="35">N = 35 = 5 × 7</option>
+            <option value="77">N = 77 = 7 × 11</option>
+          </select>
+          <button class="btn qg-scan-btn btn-sm w-100" onclick="runShor()">▶ Run Visualiser</button>
+          <button id="shorSimBtn" class="btn btn-outline-primary btn-sm w-100 mt-2" onclick="runShorSim()">▶ Run Shor Simulation (Backend)</button>
+          <div id="shorSteps" class="mt-3"></div>
+          <div id="shorSimOutput" class="mt-2"></div>
+        </div>
+        <div class="col-md-7">
+          <div class="small fw-bold mb-1 text-muted">Probability amplitude after QFT — quantum peaks reveal the period r</div>
+          <div style="position:relative;height:200px"><canvas id="shorChart"></canvas></div>
+          <div class="alert alert-danger small mt-2 mb-0 py-2">
+            <strong>At RSA-2048 scale:</strong> ~4,099 logical qubits cracks RSA-2048 in ~8 hours (Gidney &amp; Ekerå, arXiv:2103.06159). IBM already has 1,000+ qubit processors.[web:51]
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grover's -->
+    <div class="card p-4 mb-4">
+      <h5 class="fw-bold mb-1">🔑 Grover's Algorithm — Why AES-128 Is Weakened</h5>
+      <p class="text-muted small mb-3">Grover's algorithm gives a <strong>quadratic speedup</strong> for brute-force search. AES-128 has 2¹²⁸ possible keys — Grover's reduces this to 2⁶⁴. AES-256 is still safe (2¹²⁸ after Grover).[web:51]</p>
+      <div class="row g-3 align-items-center mb-3">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold small">Key length: <span id="keyVal">128 bits</span></label>
+          <input type="range" id="keySlider" min="64" max="256" step="16" value="128" class="form-range" oninput="updateGrover()">
+          <div class="row g-2 mt-1">
+            <div class="col-6"><div class="qg-metric"><div class="small text-muted">Classical</div><div class="fw-bold text-success" id="gClassical">--</div></div></div>
+            <div class="col-6"><div class="qg-metric"><div class="small text-muted">After Grover</div><div class="fw-bold text-danger" id="gQuantum">--</div></div></div>
+          </div>
+          <div class="qg-metric mt-2 text-center"><div class="small text-muted">Speedup</div><div class="fw-bold text-warning" id="gSpeedup">--</div></div>
+        </div>
+        <div class="col-md-8">
+          <div style="position:relative;height:220px"><canvas id="groverChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PQC Solutions -->
+    <div class="card p-4 mb-4">
+      <h5 class="fw-bold mb-3">🛡️ Post-Quantum Cryptography (PQC) — The Solutions</h5>
+      <p class="text-muted small mb-3">NIST finalised these standards in 2024. They replace RSA/ECC and are safe against both classical and quantum attacks.[web:51]</p>
+      <div class="row g-3">
+        <div class="col-md-3">
+          <div class="qg-pqc-card" style="border-color:#2563eb">
+            <div class="qg-pqc-icon">🔑</div>
+            <div class="fw-bold">CRYSTALS-Kyber</div>
+            <div class="small text-muted">NIST FIPS 203</div>
+            <div class="small mt-2">Key encapsulation. Replaces RSA/ECC for key exchange. Lattice-based.</div>
+            <span class="badge bg-primary mt-2">Used in QuantumGuard</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="qg-pqc-card" style="border-color:#16a34a">
+            <div class="qg-pqc-icon">✍️</div>
+            <div class="fw-bold">CRYSTALS-Dilithium</div>
+            <div class="small text-muted">NIST FIPS 204</div>
+            <div class="small mt-2">Digital signatures. Replaces RSA/ECDSA signatures.</div>
+            <span class="badge bg-success mt-2">Quantum-safe ✓</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="qg-pqc-card" style="border-color:#7c3aed">
+            <div class="qg-pqc-icon">#️⃣</div>
+            <div class="fw-bold">SHA-3-256</div>
+            <div class="small text-muted">NIST FIPS 202</div>
+            <div class="small mt-2">Hashing. Grover requires 2¹²⁸ ops to attack — infeasible.</div>
+            <span class="badge mt-2" style="background:#7c3aed">Used in QuantumGuard</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="qg-pqc-card" style="border-color:#d97706">
+            <div class="qg-pqc-icon">🔐</div>
+            <div class="fw-bold">AES-256</div>
+            <div class="small text-muted">NIST FIPS 197</div>
+            <div class="small mt-2">Symmetric encryption. Still safe after Grover (2¹²⁸ security).</div>
+            <span class="badge bg-warning text-dark mt-2">Still valid ✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Attack Log -->
+    <div class="card p-4">
+      <h5 class="fw-bold mb-1">🚨 Live Server Attack Monitor</h5>
+      <p class="text-muted small mb-3">The Java server logs rate limit violations and oversized requests in real time.</p>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="qg-metric">
+            <div class="qg-big-num text-danger" id="attackCount">0</div>
+            <div class="small text-muted">Attacks blocked</div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="qg-attack-log" id="attackLog">
+            <div class="text-muted small p-2">Loading attack log...</div>
+          </div>
+          <div style="position:relative;height:120px;margin-top:8px"><canvas id="attackChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 5 — REPORT
+══════════════════════════════════════════════ -->
+<div id="section-report" class="section-page" style="display:none">
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <h2 class="fw-bold mb-0">📄 Security Report</h2>
+      <button class="btn btn-primary" onclick="downloadPDF()">⬇️ Download PDF</button>
+    </div>
+
+    <div id="noReportData" class="text-center py-5">
+      <div style="font-size:3rem">📄</div>
+      <h5 class="mt-3">No scan data yet</h5>
+      <button class="btn qg-scan-btn mt-2" onclick="showSection('scan')">Go to Scanner →</button>
+    </div>
+
+    <div id="reportPreview" style="display:none">
+      <div class="card p-4 mb-3">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+          <div>
+            <h4 class="fw-bold mb-1">QuantumGuard Security Report</h4>
+            <div class="text-muted small" id="rptDate"></div>
+          </div>
+          <div id="rptGrade" class="qg-grade-circle-lg grade-F">-</div>
+        </div>
+        <h6 class="fw-bold">Summary</h6>
+        <table class="table table-sm"><tbody id="rptSummary"></tbody></table>
+        <div class="simple-note mt-2" style="font-size:0.8rem">
+          India NQM 2027: Critical sector systems must migrate to PQC before 2027. Budget: ₹6,003 crore. NIST FIPS 202, 203, 204 finalised August 2024.[web:51]
+        </div>
+      </div>
+      <div class="card p-4">
+        <h6 class="fw-bold mb-3">Detailed Findings</h6>
+        <div id="rptFindings"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 6: HELP -->
+<div id="section-help" class="section-page" style="display:none;">
+  <div class="container py-4">
+    <h2 class="fw-bold mb-1">Help &amp; How to Use This Website</h2>
+    <p class="text-muted mb-4">
+      Quick guide for navigating QuantumGuard in your browser (scan, results, dashboard, quantum view, and report).
+    </p>
+
+    <!-- How to use the website -->
+    <div class="card p-4 mb-4">
+      <h5 class="fw-bold mb-3">How to use the website (navigation)</h5>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="qg-help-step">
+            <div class="qg-step-num">1</div>
+            <div>
+              <div class="fw-semibold">Home / Scan tab</div>
+              <div class="small text-muted">
+                This is the default screen. Paste your code, choose the sector, then click
+                <strong>Scan My Code Now</strong>. You can also click the sample buttons to load example vulnerable or secure code.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="qg-help-step">
+            <div class="qg-step-num">2</div>
+            <div>
+              <div class="fw-semibold">Results tab</div>
+              <div class="small text-muted">
+                After a scan finishes, click the <strong>Results</strong> tab in the top bar.
+                Use the three sub‑tabs – Present‑Day, Quantum Threats, Fix Checklist – to see what was found and how to fix it.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="qg-help-step">
+            <div class="qg-step-num">3</div>
+            <div>
+              <div class="fw-semibold">Dashboard, Quantum, Report, Help</div>
+              <div class="small text-muted">
+                Use <strong>Dashboard</strong> to see charts and the HNDL risk score,
+                <strong>Quantum</strong> to learn Shor/Grover visually,
+                <strong>Report</strong> to view or download a PDF summary,
+                and <strong>Help</strong> (this page) if you forget where to click.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="small text-muted mt-3 mb-0">
+        Tip: Typical flow – Scan tab → run sample or your own code → Results → Dashboard → Quantum → Report.
+      </p>
+    </div>
+
+    <!-- Understanding the score -->
+    <div class="card p-4 mb-4">
+      <h5 class="fw-bold mb-3">Understanding the score</h5>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <h6 class="fw-semibold">Security score (0–100)</h6>
+          <p class="small text-muted mb-2">
+            Every finding reduces the score depending on severity and sector.
+            Healthcare / Government are weighted more than general apps.[web:49]
+          </p>
+          <pre class="qg-code-block bg-dark text-success p-2 rounded small">
+score = 100
+for each CVE rule match:
+    score -= ceil(weight × sectorMultiplier)
+same rule deducts at most twice
+score = max(0, score)
+
+
+CRITICAL weight = 15
+HIGH     weight = 10
+          </pre>
+        </div>
+        <div class="col-md-6">
+          <h6 class="fw-semibold">Present‑day vs quantum‑future</h6>
+          <p class="small text-muted mb-2">
+            Present‑Day tab shows bugs exploitable right now (e.g. SQL injection, MD5, hardcoded passwords, insecure deserialization, weak JWT, secrets in code).[web:32][web:49][web:51][web:52][web:53]
+            Quantum Threats tab shows algorithms that will become weak when large quantum computers arrive (RSA, ECC, AES‑128).[web:51]
+          </p>
+          <pre class="qg-code-block bg-dark text-success p-2 rounded small">
+Present‑Day:
+  MD5, SHA‑1, DES
+  Hardcoded passwords / API keys
+  SQL injection, HTTP instead of HTTPS
+  TLS 1.0 / 1.1, sensitive data in logs
+  Insecure deserialization, weak JWT config
+  High‑entropy secrets committed to code
+
+
+Quantum Threats:
+  RSA, ECC/ECDSA
+  AES‑128 (weakened by Grover)
+  Insecure random generators
+          </pre>
+        </div>
+      </div>
+      <div class="mt-3 simple-note">
+        <strong>Why does random text not always get 0?</strong><br />
+        The scanner is rule‑based. It only reduces the score when it finds patterns that match real vulnerabilities.
+        So truly safe code (or non‑code text) will often stay near 100, while vulnerable code drops much lower.[web:49]
+      </div>
+    </div>
+
+    <!-- Demo guide (for presenting the website) -->
+    <div class="card p-4" style="border:2px solid #2563eb;">
+      <h5 class="fw-bold mb-3">Demo Guide</h5>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <h6 class="fw-semibold mb-2">3‑minute live demo sequence</h6>
+          <ol class="small">
+            <li class="mb-1">
+              On the <strong>Scan</strong> tab, load the Vulnerable Java sample, choose Healthcare, click Scan.
+            </li>
+            <li class="mb-1">
+              Switch to <strong>Results</strong> → highlight the low score and SHA‑3 hash (“real PQC on backend”).
+            </li>
+            <li class="mb-1">
+              Click the <strong>Fix Checklist</strong> sub‑tab → show before/after secure code.
+            </li>
+            <li class="mb-1">
+              Go to the <strong>Quantum</strong> tab → run the Shor visualiser (e.g. N = 77).
+            </li>
+            <li class="mb-1">
+              Open <strong>Dashboard</strong> → show HNDL calculator with Health + RSA → CRITICAL risk.
+            </li>
+            <li class="mb-1">
+              Open the <strong>Report</strong> tab → show the generated summary and (optionally) download PDF.
+            </li>
+          </ol>
+        </div>
+        <div class="col-md-6">
+          <h6 class="fw-semibold mb-2">Common questions (website user)</h6>
+          <div class="small">
+            <p><strong>Q: Where do I paste my code?</strong><br />
+              A: On the <strong>Scan</strong> tab, in the big textarea labelled “Step 2 – Paste your code”.
+            </p>
+            <p><strong>Q: Where do I see detailed issues?</strong><br />
+              A: After scanning, open the <strong>Results</strong> tab. Use Present‑Day, Quantum Threats, and Fix Checklist.
+            </p>
+            <p><strong>Q: Where do I see charts?</strong><br />
+              A: The <strong>Dashboard</strong> tab shows score, findings by category, timeline, and HNDL risk.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="qg-footer text-center">
+  <p class="mb-1">QuantumGuard — 2nd Year CS Project | Free · No AI · No database · India NQM 2027 aligned</p>
+  <p class="small mb-0">Java 17 + Bootstrap 5 + Chart.js · SHA-3 (FIPS 202) + CRYSTALS-Kyber (FIPS 203) via Bouncy Castle</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="scanner.js"></script>
+
+</body>
+</html>

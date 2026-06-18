@@ -1,0 +1,272 @@
+/* ── QuantumGuard Style Sheet ─────────────────────────────────────── */
+/* 2nd year CS project — Bootstrap-first, minimal custom CSS         */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --qg-blue:   #2563eb;
+  --qg-dark:   #0f172a;
+  --qg-green:  #16a34a;
+  --qg-red:    #dc2626;
+  font-family: 'Inter', sans-serif;
+}
+
+body { background: #f1f5f9; color: #1e293b; }
+* { box-sizing: border-box; }
+code, pre { font-family: 'JetBrains Mono', monospace; }
+
+/* ── NAVBAR ──────────────────────────────────────────────────────── */
+.qg-navbar {
+  background: var(--qg-dark);
+  padding: 0.65rem 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+.qg-brand { font-size: 1.2rem; font-weight: 800; color: #fff !important; }
+.qg-brand span { color: #60a5fa; }
+
+.nav-tab-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #94a3b8;
+  font-size: 0.82rem;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 0.3rem 0.7rem;
+  transition: all 0.2s;
+}
+.nav-tab-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
+.nav-tab-btn.active { color: #60a5fa; border-color: #60a5fa; background: rgba(96,165,250,0.1); }
+
+/* ── HERO SECTION ────────────────────────────────────────────────── */
+.qg-hero {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+  color: #fff;
+  padding: 2.5rem 0 2rem;
+}
+.qg-title    { font-size: 2.3rem; font-weight: 800; letter-spacing: -0.02em; }
+.qg-subtitle { font-size: 1rem; color: #94a3b8; }
+
+/* ── PLAIN ENGLISH BOXES ─────────────────────────────────────────── */
+.what-is-box {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-left: 4px solid var(--qg-blue);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+}
+.what-is-box .wi-title {
+  font-weight: 700;
+  color: var(--qg-blue);
+  font-size: 0.73rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.what-is-box p { font-size: 0.88rem; color: #374151; margin: 0; line-height: 1.6; }
+
+/* ── CARDS ───────────────────────────────────────────────────────── */
+.card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+/* ── SCAN BUTTON ─────────────────────────────────────────────────── */
+.qg-scan-btn {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.7rem 2rem;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+}
+.qg-scan-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37,99,235,0.45); color: #fff; }
+.qg-scan-btn:disabled { opacity: 0.6; transform: none; cursor: not-allowed; }
+
+/* ── CODE AREA ───────────────────────────────────────────────────── */
+.qg-code-area {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.83rem;
+  min-height: 220px;
+  border: 2px solid #cbd5e1;
+  border-radius: 10px;
+  resize: vertical;
+  background: #f8fafc;
+  transition: border-color 0.2s;
+}
+.qg-code-area:focus { border-color: var(--qg-blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+
+/* ── METRIC CARDS ────────────────────────────────────────────────── */
+.qg-metric {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.2rem;
+  text-align: center;
+}
+.qg-big-num { font-size: 1.9rem; font-weight: 800; }
+
+/* ── GRADE CIRCLES ───────────────────────────────────────────────── */
+.qg-grade-circle    { width:78px;  height:78px;  border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.9rem; font-weight:900; margin:0 auto; }
+.qg-grade-circle-lg { width:100px; height:100px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2.7rem; font-weight:900; margin:0 auto; }
+.grade-A { background:#dcfce7; color:#166534; border:3px solid #16a34a; }
+.grade-B { background:#dbeafe; color:#1e3a8a; border:3px solid #2563eb; }
+.grade-C { background:#fef3c7; color:#92400e; border:3px solid #d97706; }
+.grade-D { background:#fee2e2; color:#991b1b; border:3px solid #dc2626; }
+.grade-F { background:#dc2626; color:#fff;    border:3px solid #991b1b; }
+
+/* ── FINDING CARDS ───────────────────────────────────────────────── */
+.qg-finding-card { border-radius: 10px; border: 1px solid #e2e8f0; }
+.qg-quantum-impact { color: #b45309; }
+.qg-checklist-item { border-left: 3px solid #cbd5e1; padding-left: 1rem; padding-bottom: 0.5rem; }
+.qg-code-block { margin:0; font-size:0.8rem; white-space:pre-wrap; word-break:break-word; border-radius:6px; }
+
+/* ── PQC CARDS ───────────────────────────────────────────────────── */
+.qg-pqc-card { background:#f8fafc; border:2px solid; border-radius:12px; padding:1.5rem 1.2rem; height:100%; text-align:center; }
+.qg-pqc-icon { font-size:2.2rem; margin-bottom:0.6rem; }
+
+/* ── HASH ALERT ──────────────────────────────────────────────────── */
+.qg-hash-alert { border-left:4px solid #16a34a; background:#f0fdf4; border-radius:8px; padding:0.9rem 1.1rem; }
+
+/* ── HELP STEPS ──────────────────────────────────────────────────── */
+.qg-help-step { display:flex; gap:1rem; align-items:flex-start; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:1rem; height:100%; }
+
+/* ── SIMPLE NOTE ─────────────────────────────────────────────────── */
+.simple-note { background:#fff7ed; border:1px solid #fed7aa; border-radius:10px; padding:1rem 1.2rem; font-size:0.87rem; line-height:1.65; }
+
+/* ── ATTACK LOG ──────────────────────────────────────────────────── */
+.qg-attack-log { max-height:200px; overflow-y:auto; font-size:0.84rem; background:#f8fafc; border-radius:8px; padding:0.5rem; }
+
+/* ── FOOTER ──────────────────────────────────────────────────────── */
+.qg-footer { background:var(--qg-dark); color:#64748b; padding:2rem 0; margin-top:3rem; }
+
+/* ── STEP NUMBERS ────────────────────────────────────────────────── */
+.qg-step-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:1.5rem 1rem; height:100%; text-align:center; }
+.qg-step-num  { width:36px; height:36px; background:var(--qg-blue); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; margin:0 auto 0.7rem; }
+
+/* ══════════════════════════════════════════════
+   QUANTUM PAGE STYLES
+══════════════════════════════════════════════ */
+
+/* Qubit circle — no animation by default */
+.qubit-display { padding: 1rem 0; }
+.qubit-circle {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 4px solid #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+  color: #2563eb;
+  margin: 0 auto;
+  background: #eff6ff;
+  transition: all 0.4s ease;
+}
+
+/* Qubit state variants — no pulsing animations */
+.qubit-state-0 {
+  border-color: #16a34a; color: #16a34a; background: #f0fdf4;
+}
+.qubit-state-1 {
+  border-color: #dc2626; color: #dc2626; background: #fef2f2;
+}
+.qubit-state-sup {
+  border-color: #d97706; color: #d97706; background: #fffbeb;
+}
+.qubit-state-ent {
+  border-color: #7c3aed; color: #7c3aed; background: #f5f3ff;
+}
+
+/* ── QUANTUM CIRCUIT DIAGRAM ─────────────────────────────────────── */
+.quantum-circuit { padding: 0.5rem 0; }
+.qc-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 10px;
+  min-height: 36px;
+}
+.qc-label {
+  width: 58px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: #64748b;
+  flex-shrink: 0;
+}
+.qc-wire {
+  flex: 1;
+  height: 2px;
+  background: #94a3b8;
+  min-width: 8px;
+}
+.qc-gate {
+  padding: 5px 9px;
+  border-radius: 5px;
+  border: 2px solid;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: help;
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+.qc-gate:hover { transform: scale(1.1); }
+
+/* Gate type colours — no glow animations */
+.gate-h  { border-color:#1d4ed8; background:#dbeafe; color:#1d4ed8; }
+.gate-u  { border-color:#6d28d9; background:#ede9fe; color:#6d28d9; }
+.gate-cx { border-color:#065f46; background:#dcfce7; color:#065f46; }
+.gate-q  { border-color:#92400e; background:#fef3c7; color:#92400e; }
+.gate-m  { border-color:#991b1b; background:#fee2e2; color:#991b1b; }
+
+/* ── SHOR'S STEP CARDS ─────────────────────────────────────────────── */
+.shor-step { border-radius: 8px; padding: 8px 12px; margin-bottom: 6px; font-size: 0.84rem; }
+.shor-classical { background: #f1f5f9; border-left: 3px solid #64748b; }
+.shor-quantum   { background: #fffbeb; border-left: 3px solid #d97706; }
+.shor-result    { background: #f0fdf4; border-left: 3px solid #16a34a; }
+
+/* ── DARK MODE ───────────────────────────────────────────────────── */
+[data-bs-theme=dark] body            { background:#0f172a; color:#e2e8f0; }
+[data-bs-theme=dark] .card           { background:#1e293b; border-color:#334155; }
+[data-bs-theme=dark] .qg-step-card   { background:#1e293b; border-color:#334155; }
+[data-bs-theme=dark] .qg-metric      { background:#1e293b; border-color:#334155; }
+[data-bs-theme=dark] .qg-help-step   { background:#1e293b; border-color:#334155; }
+[data-bs-theme=dark] .qg-pqc-card    { background:#1e293b; }
+[data-bs-theme=dark] .what-is-box    { background:#1e3a5f; border-color:#2563eb; }
+[data-bs-theme=dark] .what-is-box p  { color:#cbd5e1; }
+[data-bs-theme=dark] .simple-note    { background:#27200f; border-color:#92400e; color:#fde68a; }
+[data-bs-theme=dark] .qg-code-area   { background:#1e293b; color:#e2e8f0; border-color:#334155; }
+[data-bs-theme=dark] .qg-attack-log  { background:#1e293b; }
+[data-bs-theme=dark] .qg-hash-alert  { background:#052e16; border-color:#16a34a; color:#86efac; }
+[data-bs-theme=dark] .qubit-circle   { background:#1e293b; }
+[data-bs-theme=dark] .qubit-state-0  { background:#052e16; }
+[data-bs-theme=dark] .qubit-state-1  { background:#2d0f0f; }
+[data-bs-theme=dark] .qubit-state-sup { background:#27200f; }
+[data-bs-theme=dark] .qubit-state-ent { background:#1a0d3e; }
+[data-bs-theme=dark] .qc-wire        { background:#475569; }
+[data-bs-theme=dark] .qc-label       { color:#94a3b8; }
+[data-bs-theme=dark] .gate-h         { background:#1e3a5f; }
+[data-bs-theme=dark] .gate-u         { background:#2e1065; }
+[data-bs-theme=dark] .gate-cx        { background:#052e16; }
+[data-bs-theme=dark] .gate-q         { background:#27200f; }
+[data-bs-theme=dark] .gate-m         { background:#2d0f0f; }
+[data-bs-theme=dark] .shor-classical { background:#1e293b; }
+[data-bs-theme=dark] .shor-quantum   { background:#27200f; }
+[data-bs-theme=dark] .shor-result    { background:#052e16; }
+[data-bs-theme=dark] .form-select, [data-bs-theme=dark] .form-control { background:#1e293b; color:#e2e8f0; border-color:#334155; }
+[data-bs-theme=dark] .table          { --bs-table-bg:transparent; color:#e2e8f0; }
+[data-bs-theme=dark] code            { color:#a78bfa; }
+[data-bs-theme=dark] .accordion-item { background:#1e293b; border-color:#334155; }
+[data-bs-theme=dark] .accordion-button { background:#1e293b; color:#e2e8f0; }
+[data-bs-theme=dark] .accordion-button:not(.collapsed) { background:#2d3748; color:#60a5fa; }
+[data-bs-theme=dark] .accordion-body { background:#162032; color:#e2e8f0; }
+[data-bs-theme=dark] .nav-link       { color:#60a5fa !important; }
+[data-bs-theme=dark] pre.qg-code-block { color:#e2e8f0; }

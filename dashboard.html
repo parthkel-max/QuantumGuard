@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantumGuard — Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg qg-navbar">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand qg-brand" href="index.html">⬡ QuantumGuard</a>
+      <div class="d-flex align-items-center gap-3">
+        <a href="index.html"    class="nav-link text-white">Home</a>
+        <a href="results.html"  class="nav-link text-white">Results</a>
+        <a href="quantum.html"  class="nav-link text-white">Quantum</a>
+        <a href="report.html"   class="nav-link text-white">Report</a>
+        <a href="help.html"     class="nav-link text-white">Help</a>
+        <button class="btn btn-sm btn-outline-light" onclick="toggleDark()">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-4">
+    <h2 class="fw-bold mb-1">Security Dashboard</h2>
+    <p class="text-muted mb-4">Visualise your scan results and calculate your quantum data risk.</p>
+
+    <!-- METRIC CARDS -->
+    <div class="row g-3 mb-4" id="metricCards">
+      <div class="col-sm-3"><div class="qg-metric text-center"><div class="qg-big-num" id="mScore">--</div><div class="small text-muted">Security Score</div></div></div>
+      <div class="col-sm-3"><div class="qg-metric text-center"><div class="qg-big-num" id="mGrade" style="font-size:2.5rem">--</div><div class="small text-muted">Grade</div></div></div>
+      <div class="col-sm-3"><div class="qg-metric text-center"><div class="qg-big-num" id="mFindings">--</div><div class="small text-muted">Total Findings</div></div></div>
+      <div class="col-sm-3"><div class="qg-metric text-center"><div class="qg-big-num" id="mAgility">--</div><div class="small text-muted">Crypto Agility</div></div></div>
+    </div>
+
+    <div class="row g-4 mb-5">
+      <!-- Findings by Category -->
+      <div class="col-md-6">
+        <div class="card p-3 h-100">
+          <h6 class="fw-semibold mb-3">Findings by Category</h6>
+          <div style="position:relative;height:260px">
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <!-- Quantum Threat Timeline -->
+      <div class="col-md-6">
+        <div class="card p-3 h-100">
+          <h6 class="fw-semibold mb-3">Quantum Threat Timeline — When Algorithms Break</h6>
+          <div style="position:relative;height:260px">
+            <canvas id="timelineChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HNDL CALCULATOR -->
+    <div class="card p-4 mb-4">
+      <h5 class="fw-bold mb-1">⚡ Harvest Now Decrypt Later (HNDL) Risk Calculator</h5>
+      <p class="text-muted small mb-3">Nation-state adversaries are recording encrypted data TODAY to decrypt when quantum computers arrive. Calculate your specific risk.</p>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">What data does your app handle?</label>
+          <select id="hndlData" class="form-select">
+            <option value="other">General / Other</option>
+            <option value="health">Health records — patient data, medical history</option>
+            <option value="financial">Financial — transactions, bank details, UPI</option>
+            <option value="government">Government — Aadhaar, DigiLocker, e-gov</option>
+            <option value="personal">Personal — names, emails, addresses</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Your sector</label>
+          <select id="hndlSector" class="form-select">
+            <option value="other">Other</option>
+            <option value="healthcare">Healthcare</option>
+            <option value="banking">Banking / Fintech</option>
+            <option value="government">Government</option>
+            <option value="education">Education</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Worst algorithm in your code</label>
+          <select id="hndlAlgo" class="form-select">
+            <option value="none">None found / Unknown</option>
+            <option value="rsa">RSA — broken by Shor's algorithm</option>
+            <option value="ecc">ECC / ECDSA — broken by Shor's</option>
+            <option value="des">DES — broken classically + Grover</option>
+            <option value="aes128">AES-128 — weakened by Grover's</option>
+            <option value="sha1">SHA-1 — classically broken 2017</option>
+            <option value="md5">MD5 — classically broken 2004</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn qg-scan-btn mb-3" onclick="calculateHNDL()">Calculate My HNDL Risk</button>
+
+      <div id="hndlResult" style="display:none">
+        <div class="row g-3 align-items-center">
+          <div class="col-md-4 text-center">
+            <div id="hndlScore" class="qg-big-num">--</div>
+            <div id="hndlLevel" class="badge fs-6 mt-1">--</div>
+            <div class="small text-muted mt-1">HNDL Risk Score / 100</div>
+          </div>
+          <div class="col-md-8">
+            <div id="hndlAction" class="alert mb-2"></div>
+            <div class="small text-muted">
+              Formula: <code id="hndlFormula"></code><br>
+              Weights: DataSensitivity×0.4 + QuantumVulnerability×0.4 + SectorUrgency×0.2
+            </div>
+          </div>
+        </div>
+        <div style="position:relative;height:200px;margin-top:1rem">
+          <canvas id="hndlChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script src="scanner.js"></script>
+  <script>
+    const data = JSON.parse(sessionStorage.getItem('scanResult') || 'null');
+
+    if (data && !data.error) {
+      const d = data;
+      document.getElementById('mScore').textContent    = d.score + '/100';
+      document.getElementById('mGrade').textContent    = d.grade;
+      document.getElementById('mFindings').textContent = d.totalFindings;
+      document.getElementById('mAgility').textContent  = d.agilityScore + '/10';
+
+      // Category bar chart
+      const cats = {};
+      (d.findings || []).forEach(f => { cats[f.category] = (cats[f.category]||0)+1; });
+      new Chart(document.getElementById('categoryChart'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(cats),
+          datasets: [{ label: 'Findings', data: Object.values(cats),
+            backgroundColor: ['#dc3545','#fd7e14','#ffc107','#0d6efd','#198754','#6c757d'] }]
+        },
+        options: { responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{ display:false } },
+          scales:{ y:{ beginAtZero:true, ticks:{ stepSize:1 } } }
+        }
+      });
+    }
+
+    // Quantum threat timeline — static data from published research
+    new Chart(document.getElementById('timelineChart'), {
+      type: 'bar',
+      data: {
+        labels: ['MD5','SHA-1','DES','TLS 1.0','AES-128','SHA-256','RSA-2048','ECC-256'],
+        datasets: [{
+          label: 'Already Broken (Classical)',
+          data: [2004, 2017, 1999, 2011, 0, 0, 0, 0],
+          backgroundColor: '#dc3545'
+        },{
+          label: 'Quantum Break Year (estimated)',
+          data: [0, 0, 0, 0, 2030, 2035, 2032, 2030],
+          backgroundColor: '#fd7e14'
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position:'top' } },
+        scales: {
+          y: { beginAtZero: true,
+            title: { display: true, text: 'Year' },
+            ticks: { callback: v => v > 0 ? v : '' }
+          }
+        }
+      }
+    });
+
+    let hndlChartInst = null;
+
+    function calculateHNDL() {
+      const payload = {
+        dataType:       document.getElementById('hndlData').value,
+        sector:         document.getElementById('hndlSector').value,
+        worstAlgorithm: document.getElementById('hndlAlgo').value
+      };
+
+      fetch('http://localhost:8080/api/hndl', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(r => r.json())
+      .then(d => {
+        document.getElementById('hndlResult').style.display = 'block';
+        document.getElementById('hndlScore').textContent  = d.score;
+        document.getElementById('hndlFormula').textContent = d.formula;
+
+        const scoreEl = document.getElementById('hndlScore');
+        const levelEl = document.getElementById('hndlLevel');
+        const actEl   = document.getElementById('hndlAction');
+
+        scoreEl.className = 'qg-big-num text-' + (d.riskLevel==='CRITICAL'?'danger':d.riskLevel==='HIGH'?'warning':'success');
+        levelEl.textContent = d.riskLevel;
+        levelEl.className = 'badge fs-6 mt-1 bg-' + (d.riskLevel==='CRITICAL'?'danger':d.riskLevel==='HIGH'?'warning':'success');
+        actEl.textContent = d.action;
+        actEl.className   = 'alert alert-' + (d.riskLevel==='CRITICAL'?'danger':d.riskLevel==='HIGH'?'warning':'success') + ' mb-2';
+
+        if (hndlChartInst) hndlChartInst.destroy();
+        hndlChartInst = new Chart(document.getElementById('hndlChart'), {
+          type: 'bar',
+          data: {
+            labels: ['Data Sensitivity (×0.4)', 'Quantum Vulnerability (×0.4)', 'Sector Urgency (×0.2)', 'Final Score'],
+            datasets: [{
+              label: 'Score Component',
+              data: [d.ds * 0.4 * 10, d.qv * 0.4 * 10, d.su * 0.2 * 10, d.score],
+              backgroundColor: ['#0d6efd','#dc3545','#ffc107','#198754']
+            }]
+          },
+          options: { responsive:true, maintainAspectRatio:false,
+            plugins:{ legend:{ display:false } },
+            scales:{ y:{ beginAtZero:true, max:100 } }
+          }
+        });
+      })
+      .catch(() => alert('Make sure the Java server is running on port 8080'));
+    }
+  </script>
+
+</body>
+</html>

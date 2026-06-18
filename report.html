@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantumGuard — Report</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg qg-navbar">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand qg-brand" href="index.html">⬡ QuantumGuard</a>
+      <div class="d-flex align-items-center gap-3">
+        <a href="index.html"    class="nav-link text-white">Home</a>
+        <a href="results.html"  class="nav-link text-white">Results</a>
+        <a href="dashboard.html"class="nav-link text-white">Dashboard</a>
+        <a href="quantum.html"  class="nav-link text-white">Quantum</a>
+        <a href="help.html"     class="nav-link text-white">Help</a>
+        <button class="btn btn-sm btn-outline-light" onclick="toggleDark()">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="fw-bold mb-1">Compliance Report</h2>
+        <p class="text-muted mb-0">NIST FIPS + India National Quantum Mission 2027 aligned</p>
+      </div>
+      <button class="btn qg-scan-btn btn-lg" onclick="downloadPDF()">⬇ Download PDF</button>
+    </div>
+
+    <!-- Report Preview -->
+    <div id="reportPreview" class="card p-4">
+      <div id="noReport" class="text-center py-5">
+        <h5>No scan results yet</h5>
+        <p class="text-muted">Run a scan first to generate your report.</p>
+        <a href="index.html" class="btn qg-scan-btn">Go to Scanner</a>
+      </div>
+      <div id="reportContent" style="display:none">
+
+        <!-- Header -->
+        <div class="text-center mb-4 pb-3 border-bottom">
+          <h3 class="fw-bold text-primary">⬡ QuantumGuard Security Report</h3>
+          <p class="text-muted mb-0">Quantum-Ready Code Security Analysis</p>
+          <p class="small text-muted" id="reportDate"></p>
+        </div>
+
+        <!-- Summary -->
+        <div class="row g-3 mb-4">
+          <div class="col-sm-3 text-center">
+            <div class="qg-grade-circle-lg" id="rGrade"></div>
+            <div class="small text-muted mt-1">Security Grade</div>
+          </div>
+          <div class="col-sm-9">
+            <table class="table table-sm">
+              <tbody id="summaryTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- NQM Alignment -->
+        <div class="alert alert-primary mb-4">
+          <strong>🇮🇳 India National Quantum Mission 2027 Alignment</strong><br>
+          This report maps findings to India's NQM mandate requiring Critical Information Infrastructure
+          sectors (Defence, Telecom, Banking, Health) to adopt Post-Quantum Cryptography by 2027.
+          Budget: ₹6,003 crore. All quantum-vulnerable algorithms identified must be migrated
+          before the NQM 2027 deadline to comply with CERT-In guidelines.
+        </div>
+
+        <!-- Findings Table -->
+        <h5 class="fw-bold mb-3">Detailed Findings</h5>
+        <div id="reportFindings"></div>
+
+        <!-- Footer -->
+        <div class="mt-4 pt-3 border-top small text-muted">
+          <p><strong>Tool:</strong> QuantumGuard — Free open code security scanner</p>
+          <p><strong>Standards referenced:</strong> NIST FIPS 202 (SHA-3), NIST FIPS 203 (CRYSTALS-Kyber),
+            NIST FIPS 204 (CRYSTALS-Dilithium), NIST FIPS 205 (SPHINCS+), NVD CVE Database</p>
+          <p><strong>Disclaimer:</strong> This scan uses rule-based pattern matching.
+            Results should be reviewed by a qualified security professional before use in production.</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="scanner.js"></script>
+  <script>
+    const data = JSON.parse(sessionStorage.getItem('scanResult') || 'null');
+
+    if (!data || data.error) {
+      document.getElementById('noReport').style.display    = 'block';
+      document.getElementById('reportContent').style.display = 'none';
+    } else {
+      document.getElementById('noReport').style.display    = 'none';
+      document.getElementById('reportContent').style.display = 'block';
+      renderReport(data);
+    }
+
+    function renderReport(d) {
+      const now = new Date();
+      document.getElementById('reportDate').textContent =
+        'Generated: ' + now.toLocaleString() + ' | QuantumGuard v1.0';
+
+      const gradeEl = document.getElementById('rGrade');
+      gradeEl.textContent   = d.grade;
+      gradeEl.className     = 'qg-grade-circle-lg grade-' + d.grade;
+
+      document.getElementById('summaryTable').innerHTML = `
+        <tr><td><strong>Security Score</strong></td><td>${d.score} / 100</td></tr>
+        <tr><td><strong>Grade</strong></td><td>${d.grade}</td></tr>
+        <tr><td><strong>Language Detected</strong></td><td>${d.language}</td></tr>
+        <tr><td><strong>Total Lines Scanned</strong></td><td>${d.totalLines}</td></tr>
+        <tr><td><strong>Total Findings</strong></td><td>${d.totalFindings}</td></tr>
+        <tr><td><strong>Sector</strong></td><td>${d.sector}</td></tr>
+        <tr><td><strong>Crypto Agility Score</strong></td><td>${d.agilityScore} / 10</td></tr>
+        <tr><td><strong>Estimated Migration Effort</strong></td><td>${d.migrationEffort}</td></tr>
+        <tr><td><strong>SHA-3-256 Hash</strong></td><td><code class="small">${(d.sha3Hash||'').substring(0,32)}...</code></td></tr>`;
+
+      const findings = d.findings || [];
+      if (findings.length === 0) {
+        document.getElementById('reportFindings').innerHTML =
+          '<div class="alert alert-success">No vulnerabilities found. Code passed all checks.</div>';
+        return;
+      }
+
+      document.getElementById('reportFindings').innerHTML = findings.map((f, i) => `
+        <div class="border rounded p-3 mb-3">
+          <div class="d-flex justify-content-between mb-2">
+            <strong>${i+1}. ${f.name}</strong>
+            <div>
+              <span class="badge bg-${f.severity==='CRITICAL'?'danger':'warning'} me-1">${f.severity}</span>
+              <span class="badge bg-secondary">${f.cveId}</span>
+              <span class="badge bg-dark">Line ${f.lineNumber}</span>
+            </div>
+          </div>
+          <code class="d-block bg-light p-2 rounded small mb-2">${escHtml(f.lineContent)}</code>
+          <div class="small mb-1"><strong>Present Risk:</strong> ${f.presentRisk}</div>
+          <div class="small mb-1 text-warning"><strong>⚡ Quantum Impact:</strong> ${f.quantumImpact}</div>
+          <div class="small mb-1 text-success"><strong>Fix:</strong> ${f.fix}</div>
+          <div class="small text-muted"><strong>NIST Reference:</strong> ${f.nistRef} | Est. time: ${f.fixTimeMinutes} min</div>
+        </div>`).join('');
+    }
+
+    function downloadPDF() {
+      if (!data || data.error) {
+        alert('No scan data. Please run a scan first.');
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      let y = 20;
+
+      const addLine = (txt, size=10, bold=false, color=[0,0,0]) => {
+        doc.setFontSize(size);
+        doc.setFont('helvetica', bold ? 'bold' : 'normal');
+        doc.setTextColor(...color);
+        const lines = doc.splitTextToSize(txt, 170);
+        lines.forEach(line => {
+          if (y > 280) { doc.addPage(); y = 20; }
+          doc.text(line, 20, y);
+          y += size * 0.5 + 2;
+        });
+        y += 2;
+      };
+
+      // Title
+      addLine('QuantumGuard Security Report', 18, true, [13, 110, 253]);
+      addLine('Quantum-Ready Code Security Analysis', 11, false, [100,100,100]);
+      addLine('Generated: ' + new Date().toLocaleString(), 9, false, [120,120,120]);
+      y += 5;
+
+      // NQM
+      addLine('India National Quantum Mission 2027 Alignment', 12, true, [13, 110, 253]);
+      addLine('This report maps findings to India NQM mandate — Critical Information Infrastructure sectors must adopt PQC by 2027. Budget: Rs 6003 crore.', 9);
+      y += 3;
+
+      // Summary
+      addLine('Summary', 13, true);
+      [
+        ['Security Score', data.score + ' / 100'],
+        ['Grade', data.grade],
+        ['Language', data.language],
+        ['Lines Scanned', data.totalLines],
+        ['Total Findings', data.totalFindings],
+        ['Sector', data.sector],
+        ['Crypto Agility', data.agilityScore + ' / 10'],
+        ['Migration Effort', data.migrationEffort]
+      ].forEach(([k,v]) => addLine(k + ': ' + v, 10));
+      y += 5;
+
+      // Findings
+      addLine('Detailed Findings', 13, true);
+      (data.findings || []).forEach((f, i) => {
+        if (y > 260) { doc.addPage(); y = 20; }
+        addLine((i+1) + '. ' + f.name + ' [' + f.severity + '] — CVE: ' + f.cveId + ' — Line ' + f.lineNumber, 10, true, f.severity==='CRITICAL' ? [200,30,30] : [180,120,0]);
+        addLine('Present Risk: ' + f.presentRisk, 9);
+        addLine('Quantum Impact: ' + f.quantumImpact, 9, false, [180, 100, 0]);
+        addLine('Fix: ' + f.fix, 9, false, [0, 120, 0]);
+        addLine('NIST Reference: ' + f.nistRef + ' | Est. time: ' + f.fixTimeMinutes + ' min', 9, false, [100,100,100]);
+        y += 3;
+      });
+
+      // Footer
+      if (y > 260) { doc.addPage(); y = 20; }
+      y += 5;
+      addLine('Standards: NIST FIPS 202, 203, 204, 205 | Tool: QuantumGuard | No AI used — rule-based deterministic scanner', 8, false, [120,120,120]);
+
+      doc.save('QuantumGuard_Security_Report_' + Date.now() + '.pdf');
+    }
+
+    function escHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+  </script>
+
+</body>
+</html>

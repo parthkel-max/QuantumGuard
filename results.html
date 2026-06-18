@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantumGuard — Scan Results</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg qg-navbar">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand qg-brand" href="index.html">⬡ QuantumGuard</a>
+      <div class="d-flex align-items-center gap-3">
+        <a href="index.html"    class="nav-link text-white">Home</a>
+        <a href="dashboard.html"class="nav-link text-white">Dashboard</a>
+        <a href="quantum.html"  class="nav-link text-white">Quantum</a>
+        <a href="report.html"   class="nav-link text-white">Report</a>
+        <a href="help.html"     class="nav-link text-white">Help</a>
+        <button class="btn btn-sm btn-outline-light" onclick="toggleDark()">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-4" id="noResults">
+    <div class="text-center py-5">
+      <h4>No scan results yet</h4>
+      <p class="text-muted">Go back to the home page and scan some code first.</p>
+      <a href="index.html" class="btn qg-scan-btn">Go to Scanner</a>
+    </div>
+  </div>
+
+  <div class="container py-4" id="resultsContainer" style="display:none">
+
+    <!-- GRADE + SCORE HEADER -->
+    <div class="row g-3 mb-4" id="scoreHeader"></div>
+
+    <!-- SHA3 HASH -->
+    <div class="alert alert-success mb-4" id="hashAlert" style="display:none">
+      <strong>SHA-3-256 File Hash</strong> (quantum-safe verification — real PQC running on server)<br>
+      <code id="hashDisplay" class="small"></code>
+    </div>
+
+    <!-- TABS -->
+    <ul class="nav nav-tabs mb-3" id="resultTabs">
+      <li class="nav-item">
+        <button class="nav-link active" onclick="showTab('present',this)">
+          🔴 Present-Day Threats <span class="badge bg-danger ms-1" id="presentCount">0</span>
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" onclick="showTab('quantum',this)">
+          ⚡ Quantum Future Threats <span class="badge bg-warning text-dark ms-1" id="quantumCount">0</span>
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" onclick="showTab('checklist',this)">
+          📋 Retrofit Checklist <span class="badge bg-primary ms-1" id="checklistCount">0</span>
+        </button>
+      </li>
+    </ul>
+
+    <!-- FILTER BUTTONS -->
+    <div class="mb-3 d-flex gap-2 flex-wrap" id="filterButtons">
+      <button class="btn btn-sm btn-outline-secondary active" onclick="filterSeverity('all',this)">All</button>
+      <button class="btn btn-sm btn-outline-danger"           onclick="filterSeverity('CRITICAL',this)">Critical</button>
+      <button class="btn btn-sm btn-outline-warning"          onclick="filterSeverity('HIGH',this)">High</button>
+      <button class="btn btn-sm btn-outline-info"             onclick="filterSeverity('WARNING',this)">Warning</button>
+    </div>
+
+    <!-- PRESENT-DAY FINDINGS -->
+    <div id="presentTab">
+      <div id="presentFindings"></div>
+      <div id="noPresentFindings" class="alert alert-success" style="display:none">
+        ✅ No present-day vulnerabilities found! Good job.
+      </div>
+    </div>
+
+    <!-- QUANTUM FUTURE FINDINGS -->
+    <div id="quantumTab" style="display:none">
+      <div id="quantumFindings"></div>
+      <div id="noQuantumFindings" class="alert alert-success" style="display:none">
+        ✅ No quantum-future vulnerabilities found in this code.
+      </div>
+    </div>
+
+    <!-- RETROFIT CHECKLIST -->
+    <div id="checklistTab" style="display:none">
+      <div class="mb-3">
+        <div id="checklistItems"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="scanner.js"></script>
+  <script>
+    const data = JSON.parse(sessionStorage.getItem('scanResult') || 'null');
+
+    if (!data || data.error) {
+      document.getElementById('noResults').style.display = 'block';
+    } else {
+      document.getElementById('noResults').style.display    = 'none';
+      document.getElementById('resultsContainer').style.display = 'block';
+      renderResults(data);
+    }
+
+    function renderResults(d) {
+      // Score header
+      const gradeColor = { A:'success', B:'info', C:'warning', D:'danger', F:'danger' };
+      document.getElementById('scoreHeader').innerHTML = `
+        <div class="col-sm-3">
+          <div class="qg-metric text-center">
+            <div class="qg-grade-circle grade-${d.grade}">${d.grade}</div>
+            <div class="small text-muted mt-1">Security Grade</div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="qg-metric text-center">
+            <div class="qg-big-num text-${gradeColor[d.grade]||'danger'}">${d.score}<span class="fs-5">/100</span></div>
+            <div class="small text-muted">Security Score</div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="qg-metric text-center">
+            <div class="qg-big-num text-primary">${d.agilityScore}<span class="fs-5">/10</span></div>
+            <div class="small text-muted">Crypto Agility</div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="qg-metric text-center">
+            <div class="qg-big-num text-secondary" style="font-size:1.5rem">${d.migrationEffort}</div>
+            <div class="small text-muted">Est. Fix Time</div>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="alert alert-secondary d-flex gap-4 flex-wrap">
+            <span><strong>Language:</strong> ${d.language}</span>
+            <span><strong>Lines:</strong> ${d.totalLines}</span>
+            <span><strong>Findings:</strong> ${d.totalFindings}</span>
+            <span><strong>Sector:</strong> ${d.sector}</span>
+          </div>
+        </div>`;
+
+      // SHA3
+      if (d.sha3Hash) {
+        document.getElementById('hashAlert').style.display = 'block';
+        document.getElementById('hashDisplay').textContent = d.sha3Hash;
+      }
+
+      const findings   = d.findings || [];
+      const present    = findings.filter(f => f.layer === 'PRESENT' || f.layer === 'BOTH');
+      const quantum    = findings.filter(f => f.layer === 'QUANTUM' || f.layer === 'BOTH');
+
+      document.getElementById('presentCount').textContent  = present.length;
+      document.getElementById('quantumCount').textContent  = quantum.length;
+      document.getElementById('checklistCount').textContent = findings.length;
+
+      // Render present findings
+      if (present.length === 0) {
+        document.getElementById('noPresentFindings').style.display = 'block';
+      } else {
+        document.getElementById('presentFindings').innerHTML = present.map(f => findingCard(f)).join('');
+      }
+
+      // Render quantum findings
+      if (quantum.length === 0) {
+        document.getElementById('noQuantumFindings').style.display = 'block';
+      } else {
+        document.getElementById('quantumFindings').innerHTML = quantum.map(f => findingCard(f)).join('');
+      }
+
+      // Render checklist
+      document.getElementById('checklistItems').innerHTML = findings.length === 0
+        ? '<div class="alert alert-success">No fixes needed — code is clean!</div>'
+        : findings.map((f, i) => checklistItem(f, i)).join('');
+    }
+
+    function findingCard(f) {
+      const sevClass = f.severity === 'CRITICAL' ? 'danger' : f.severity === 'HIGH' ? 'warning' : 'info';
+      return `
+        <div class="card qg-finding-card mb-3 finding-card border-${sevClass}" data-severity="${f.severity}" id="card-${f.lineNumber}-${f.cveId.replace(/[^a-z0-9]/gi,'_')}">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+              <span class="badge bg-${sevClass} me-2">${f.severity}</span>
+              <strong>${f.name}</strong>
+              <span class="text-muted ms-2 small">${f.cveId}</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-secondary">Line ${f.lineNumber}</span>
+              <button class="btn btn-sm btn-outline-secondary" onclick="dismissCard(this)">Dismiss</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <code class="d-block p-2 bg-light rounded mb-3 small">${escHtml(f.lineContent)}</code>
+            <div class="mb-2">
+              <span class="badge bg-danger me-1">Present Risk</span>
+              ${escHtml(f.presentRisk)}
+            </div>
+            <div class="mb-2 qg-quantum-impact">
+              <span class="badge bg-warning text-dark me-1">⚡ Quantum Impact</span>
+              ${escHtml(f.quantumImpact)}
+            </div>
+            <div class="mt-2">
+              <span class="badge bg-success me-1">Fix</span>
+              ${escHtml(f.fix)}
+            </div>
+            <div class="small text-muted mt-1">NIST Reference: ${f.nistRef}</div>
+          </div>
+        </div>`;
+    }
+
+    function checklistItem(f, i) {
+      return `
+        <div class="qg-checklist-item mb-3">
+          <div class="form-check mb-1">
+            <input class="form-check-input" type="checkbox" id="chk${i}" onchange="updateProgress()">
+            <label class="form-check-label fw-semibold" for="chk${i}">
+              <span class="badge bg-${f.severity==='CRITICAL'?'danger':'warning'} me-2">${f.severity}</span>
+              ${f.name} — Line ${f.lineNumber}
+            </label>
+          </div>
+          <div class="ms-4">
+            <div class="row g-2 mt-1">
+              <div class="col-md-6">
+                <div class="small text-danger fw-semibold mb-1">Before (insecure)</div>
+                <pre class="qg-code-block bg-danger bg-opacity-10 border border-danger rounded p-2 small">${escHtml(f.beforeCode)}</pre>
+              </div>
+              <div class="col-md-6">
+                <div class="small text-success fw-semibold mb-1">After (secure)</div>
+                <pre class="qg-code-block bg-success bg-opacity-10 border border-success rounded p-2 small">${escHtml(f.afterCode)}</pre>
+              </div>
+            </div>
+            <div class="small text-muted mt-1">
+              NIST: ${f.nistRef} | Est. time: ${f.fixTimeMinutes} min
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function showTab(tab, btn) {
+      ['present','quantum','checklist'].forEach(t => {
+        document.getElementById(t+'Tab').style.display = t === tab ? 'block' : 'none';
+      });
+      document.querySelectorAll('#resultTabs .nav-link').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function filterSeverity(sev, btn) {
+      document.querySelectorAll('.finding-card').forEach(card => {
+        card.style.display = (sev === 'all' || card.dataset.severity === sev) ? 'block' : 'none';
+      });
+      document.querySelectorAll('#filterButtons button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function dismissCard(btn) {
+      btn.closest('.qg-finding-card').style.display = 'none';
+    }
+
+    function updateProgress() {
+      const checks = document.querySelectorAll('#checklistItems input[type=checkbox]');
+      const done   = [...checks].filter(c => c.checked).length;
+      console.log(`Progress: ${done}/${checks.length} fixes completed`);
+    }
+
+    function escHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+  </script>
+
+</body>
+</html>

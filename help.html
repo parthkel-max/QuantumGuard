@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantumGuard — Help</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg qg-navbar">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand qg-brand" href="index.html">⬡ QuantumGuard</a>
+      <div class="d-flex align-items-center gap-3">
+        <a href="index.html"    class="nav-link text-white">Home</a>
+        <a href="results.html"  class="nav-link text-white">Results</a>
+        <a href="dashboard.html"class="nav-link text-white">Dashboard</a>
+        <a href="quantum.html"  class="nav-link text-white">Quantum</a>
+        <a href="report.html"   class="nav-link text-white">Report</a>
+        <button class="btn btn-sm btn-outline-light" onclick="toggleDark()">🌙</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-4">
+
+    <h2 class="fw-bold mb-1">Help Centre</h2>
+    <p class="text-muted mb-4">Everything you need to use QuantumGuard — step by step, plain English.</p>
+
+    <!-- SECTION A: HOW TO USE -->
+    <div class="card p-4 mb-4">
+      <h4 class="fw-bold mb-4">How to Use QuantumGuard — Step by Step</h4>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="qg-help-step">
+            <div class="qg-step-num">1</div>
+            <div>
+              <div class="fw-semibold">Open the Home page</div>
+              <div class="text-muted small">Go to <code>localhost:8080</code> in your browser after starting the Java server.</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="qg-help-step">
+            <div class="qg-step-num">2</div>
+            <div>
+              <div class="fw-semibold">Select your sector</div>
+              <div class="text-muted small">Choose Healthcare, Banking, Government, Education, or Other. This adjusts how seriously each finding is scored. Healthcare and Government findings are weighted 1.3× higher because that data is more sensitive.</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="qg-help-step">
+            <div class="qg-step-num">3</div>
+            <div>
+              <div class="fw-semibold">Paste code or upload a file</div>
+              <div class="text-muted small">Paste any source code into the text area, or upload a file (.java .js .ts .py .php .c .cpp .cs .go .rb .kt .swift .rs). Max size: 50KB. One file at a time. Or click a sample button to load pre-written vulnerable code instantly.</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="qg-help-step">
+            <div class="qg-step-num">4</div>
+            <div>
+              <div class="fw-semibold">Click Scan Now</div>
+              <div class="text-muted small">The Java backend scans every line against 15 CVE rules using regex matching. Results appear in under 1 second for most files. The SHA-3-256 hash of your code is shown — proof of quantum-safe verification.</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="qg-help-step">
+            <div class="qg-step-num">5</div>
+            <div>
+              <div class="fw-semibold">Read your grade on the Results page</div>
+              <div class="text-muted small">You get a letter grade A to F. A = very secure. F = critical issues found. The score is calculated as: 100 minus the sum of severity weights (15 for Critical, 10 for High, 5 for Warning) multiplied by your sector multiplier.</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="qg-help-step">
+            <div class="qg-step-num">6</div>
+            <div>
+              <div class="fw-semibold">Read each finding</div>
+              <div class="text-muted small">Each finding shows the exact line number, the CVE ID, the present-day risk, and the Quantum Impact — how quantum computers will make this worse by 2030. Use the filter buttons (Critical / High / Warning) to focus. Click Dismiss for false positives.</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="qg-help-step">
+            <div class="qg-step-num">7</div>
+            <div>
+              <div class="fw-semibold">Use the Retrofit Checklist tab</div>
+              <div class="text-muted small">Switch to the Retrofit Checklist tab on the Results page. Each finding shows the exact insecure code and the exact secure replacement for your language. Tick off fixes as you complete them.</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="qg-help-step">
+            <div class="qg-step-num">8</div>
+            <div>
+              <div class="fw-semibold">Visit the Dashboard</div>
+              <div class="text-muted small">See your score, crypto agility score, bar chart of issues by category, and the quantum threat timeline showing when each algorithm is expected to be broken. Use the HNDL Risk Calculator to calculate your specific data risk.</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="qg-help-step">
+            <div class="qg-step-num">9</div>
+            <div>
+              <div class="fw-semibold">Visit Quantum Education</div>
+              <div class="text-muted small">See Shor's and Grover's algorithm educational visualisers. Understand why RSA will be broken and why MD5 is already broken. Watch the Live Attack Monitor to see QuantumGuard defending itself in real time.</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="qg-help-step">
+            <div class="qg-step-num">10</div>
+            <div>
+              <div class="fw-semibold">Download your PDF Report</div>
+              <div class="text-muted small">Go to the Report page and click Download PDF. Your report includes every finding, the exact fix, NIST FIPS references, India NQM 2027 alignment, and your overall grade. Share it with your team, professor, or auditor.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION B: GLOSSARY -->
+    <div class="card p-4 mb-4">
+      <h4 class="fw-bold mb-3">Plain English Glossary</h4>
+      <div class="accordion" id="glossaryAccordion">
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gCVE">
+              CVE — Common Vulnerability and Exposure
+            </button>
+          </h2>
+          <div id="gCVE" class="accordion-collapse collapse" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">A numbered record of a known security vulnerability — like a bug report for the whole world. Example: CVE-2004-2761 is the official record of MD5 being broken. Every CVE has an ID, a description, and a severity score. QuantumGuard maps every finding to a real CVE from the National Vulnerability Database (nvd.nist.gov).</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gPQC">
+              PQC — Post-Quantum Cryptography
+            </button>
+          </h2>
+          <div id="gPQC" class="accordion-collapse collapse" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">Encryption algorithms that are safe against both classical computers AND quantum computers. NIST finalised 3 PQC standards in August 2024: CRYSTALS-Kyber (FIPS 203) for key exchange, CRYSTALS-Dilithium (FIPS 204) for signatures, and SHA-3 (FIPS 202) for hashing. QuantumGuard runs SHA-3 and CRYSTALS-Kyber on its own server via Bouncy Castle.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gSHA3">
+              SHA-3 — Secure Hash Algorithm 3
+            </button>
+          </h2>
+          <div id="gSHA3" class="accordion-collapse collapse" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">A quantum-resistant hashing algorithm standardised by NIST (FIPS 202). Unlike MD5 and SHA-1 which use Merkle-Damgård construction (now broken), SHA-3 uses the Keccak sponge function. Even with Grover's quantum algorithm, breaking SHA-3-256 requires 2^128 operations — infeasible forever. QuantumGuard hashes every uploaded file with SHA-3.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gKyber">
+              CRYSTALS-Kyber — Post-Quantum Key Exchange
+            </button>
+          </h2>
+          <div id="gKyber" class="accordion-collapse collapse" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">The NIST FIPS 203 standard that replaces RSA for key exchange. Based on Module Learning With Errors (MLWE) — a mathematical problem no quantum algorithm can efficiently solve. Shor's algorithm only breaks number-theory problems (RSA, ECC) — it has no effect on MLWE. QuantumGuard uses Kyber to encrypt stored scan results.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gShor">
+              Shor's Algorithm — quantum threat to RSA
+            </button>
+          </h2>
+          <div id="gShor" class="accordion-collapse collapse" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">A quantum algorithm that can factor large numbers (the basis of RSA) in polynomial time O(log³N) using quantum superposition and Quantum Fourier Transform. A classical computer takes longer than the age of the universe to factor RSA-2048. A quantum computer running Shor's algorithm can do it in approximately 8 hours (Gidney and Ekerå, 2021). This makes all RSA and ECC encryption breakable by 2030.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gGrover">
+              Grover's Algorithm — quantum threat to symmetric crypto
+            </button>
+          </h2>
+          <div id="gGrover" class="accordion-collapse collapse" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">A quantum search algorithm that finds an item in an unsorted list of N items in O(√N) steps instead of O(N) classically. Applied to encryption: it halves the effective key length. AES-128 becomes effectively AES-64 (classically breakable). MD5 cracking drops from seconds to microseconds. This is why QuantumGuard recommends AES-256 (still safe: √(2^256) = 2^128 — infeasible).</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gAgility">
+              Crypto Agility — how easy is it to update your encryption?
+            </button>
+          </h2>
+          <div id="gAgility" class="accordion-collapse collapse" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">A measure of how easily your code can switch to new cryptographic algorithms. High agility (9/10) means all crypto calls are in one or two places — easy to update. Low agility (1/10) means crypto is scattered across hundreds of lines — very expensive to migrate. QuantumGuard calculates this as: unique crypto lines / total lines. The lower the concentration, the higher the agility score.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gHNDL">
+              HNDL — Harvest Now Decrypt Later
+            </button>
+          </h2>
+          <div id="gHNDL" class="accordion-collapse collapse" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">An attack strategy where adversaries record encrypted data today and store it, waiting for quantum computers to arrive so they can decrypt it later. This attack is happening RIGHT NOW — documented by NSA, GCHQ, and CERT-In. Your health records, financial transactions, and government data encrypted today with RSA or SHA-1 may be readable by 2030. The HNDL Risk Calculator shows your specific exposure.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gNIST">
+              NIST — National Institute of Standards and Technology
+            </button>
+          </h2>
+          <div id="gNIST" class="accordion-collapse collapse" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">The US government agency that sets global cryptography standards. In August 2024 NIST finalised three post-quantum cryptography standards: FIPS 202 (SHA-3), FIPS 203 (CRYSTALS-Kyber), FIPS 204 (CRYSTALS-Dilithium), and FIPS 205 (SPHINCS+). Every finding in QuantumGuard maps to a specific NIST standard.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gNQM">
+              NQM — India's National Quantum Mission
+            </button>
+          </h2>
+          <div id="gNQM" class="accordion-collapse collapse" data-bs-parent="#glossaryAccordion">
+            <div class="accordion-body">India's National Quantum Mission with ₹6,003 crore budget (2023–2031). The NQM Task Force mandates that Critical Information Infrastructure sectors — Defence, Telecom, Banking, Healthcare — begin formal PQC migration by 2027. QuantumGuard's PDF report includes NQM 2027 alignment to help Indian developers, hospitals, and government agencies comply with this mandate.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION C: FAQ -->
+    <div class="card p-4 mb-4">
+      <h4 class="fw-bold mb-3">Frequently Asked Questions</h4>
+      <div class="accordion" id="faqAccordion">
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+              What is quantum computing?
+            </button>
+          </h2>
+          <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">A new type of computer that uses quantum physics — specifically superposition and entanglement — to process information. A classical computer uses bits (0 or 1). A quantum computer uses qubits which can be 0 and 1 simultaneously. For specific problems like factoring large numbers (breaking RSA), quantum computers are exponentially faster. Google's Willow chip (December 2024) performed a calculation in 5 minutes that would take classical supercomputers 10 septillion years.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+              Why should I care about quantum threats right now?
+            </button>
+          </h2>
+          <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">Three reasons. First — MD5, SHA-1, and DES are already broken by classical computers TODAY — not waiting for quantum. Second — Harvest-Now-Decrypt-Later attacks are happening right now. Nation-state adversaries record encrypted data today to decrypt when quantum computers arrive around 2030. Third — India's NQM Task Force mandates critical sectors migrate to PQC by 2027. That is only 1 year away.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+              What does my grade mean?
+            </button>
+          </h2>
+          <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">A (90-100) = Very secure — no critical findings. B (75-89) = Good — minor issues to fix. C (60-74) = Needs improvement — several vulnerabilities found. D (40-59) = Poor — serious problems present. F (0-39) = Critical — immediate action needed. Fix all red Critical findings first.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+              How do I fix MD5?
+            </button>
+          </h2>
+          <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">Replace MessageDigest.getInstance("MD5") with MessageDigest.getInstance("SHA3-256"). SHA-3 is built into Java 9 and above — no extra library needed. In Python: replace hashlib.md5() with hashlib.sha3_256(). In PHP: replace md5() with hash('sha3-256', $input). The Retrofit Checklist shows the exact before and after code for your specific language.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+              Is my code stored on the server?
+            </button>
+          </h2>
+          <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">No. Your code is scanned in memory and never written to disk. The scan result summary (score, findings, grade) is stored in your browser's sessionStorage — it disappears when you close the tab. The Java server only writes to attacks.json (blocked attack logs) and scan-history.json (result summaries without code). Your source code is never saved anywhere.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+              Can QuantumGuard scan any programming language?
+            </button>
+          </h2>
+          <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">QuantumGuard supports 12 languages: Java, JavaScript, TypeScript, Python, PHP, C/C++, C#, Go, Ruby, Kotlin, Swift, and Rust. Language is auto-detected from your code — no dropdown needed. Universal patterns (MD5, SHA-1, RSA, hardcoded passwords, HTTP) work across all languages. Language-specific patterns (new Random() in Java, Math.random() in JS, random.randint in Python) are applied only when the correct language is detected.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq7">
+              Does QuantumGuard use AI?
+            </button>
+          </h2>
+          <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">No. QuantumGuard uses zero AI or machine learning. All scanning is rule-based — regex patterns matched against CVE rules in rules.json. All formulas (security score, crypto agility, HNDL risk, migration estimate) are deterministic mathematical calculations. This means every result is reproducible, fully explainable, and traceable to a specific CVE number you can verify on nvd.nist.gov. AI cannot guarantee this — rule-based systems are more reliable for security tools.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq8">
+              What is the Crypto Agility score?
+            </button>
+          </h2>
+          <div id="faq8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">A score from 1 to 10 measuring how easily your code can switch to new cryptographic algorithms in the future. Score 9 = crypto calls in 1-2 places — migrating to PQC takes hours. Score 1 = crypto scattered across the entire codebase — migration takes weeks. Formula: unique_crypto_lines / total_lines = concentration. Lower concentration = higher agility. NIST PQC Migration Guide recommends designing for crypto agility as a preparation strategy.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq9">
+              Is QuantumGuard itself secure?
+            </button>
+          </h2>
+          <div id="faq9" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">Yes — and it uses the same principles it teaches. Rate limiting blocks flood attacks (max 15 requests per minute per IP). Input sanitisation rejects inputs over 50KB. Security headers (X-Frame-Options, Content-Type-Options, XSS-Protection) are set on every response. SHA-3 hashes every uploaded file for quantum-safe integrity verification. CRYSTALS-Kyber encrypts stored scan results. Page 4 (Quantum Education) shows all blocked attacks in real time.</div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq10">
+              Is this free? How do I run it?
+            </button>
+          </h2>
+          <div id="faq10" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">Completely free. No signup, no credit card, no subscription. To run: (1) Download bcprov-jdk18on-178.jar and json-20240303.jar into the lib/ folder. (2) Compile: <code>javac -cp ".;lib/*" src/*.java -d src</code>. (3) Run: <code>java -cp ".;lib/*;src" QuantumGuardServer</code>. (4) Open <code>http://localhost:8080</code> in your browser. On Mac/Linux replace semicolons with colons in the classpath.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="scanner.js"></script>
+
+</body>
+</html>
